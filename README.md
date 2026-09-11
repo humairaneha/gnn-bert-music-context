@@ -141,28 +141,4 @@ The dispatchers accept task, variant, or dataset arguments as shown above.
 each run. Feature and graph stages may reuse existing caches; cache reuse is
 not equivalent to resuming a training checkpoint.
 
-## Data and evaluation notes
 
-- Task 1 fine-tunes BERT on MusicCaps captions. Fusion and contrastive pipelines
-  use frozen, cached BERT representations.
-- MagnaTagATune uses a custom song-grouped split. Song grouping does not by
-  itself establish artist separation or use of the official dataset split.
-- Task 3 text consists of instrument-tag-derived descriptions; its prediction
-  targets are genre and mood tags.
-- Multi-label pipelines retain validation-tuned thresholds and fixed-0.5
-  results separately. GTZAN is single-label genre classification.
-- The saved Task 2 CNN comparison uses segment-level validation scores, while
-  GNN validation scores are at track/graph level. It is not a controlled
-  comparison at a common evaluation unit. The referenced `cnn_eval.ipynb`
-  is absent from this checkout.
-- `notebooks/demo_context.ipynb` currently loads a cached graph and runs
-  GNN-only inference. It requires the processed graph, label mapping,
-  checkpoint, and thresholds; displaying its text does not run BERT fusion.
-- Graph sample directories contain 20 GTZAN, 29 MagnaTagATune, and 20 MusicCaps
-  `.pt` files. Large processed data and checkpoints are generally ignored by
-  Git, so local artifact presence does not establish availability in a clone.
-- Three Task 3 case studies are saved in `results/task3_fusion/case_studies.json`.
-  Task 4 has ten caption queries with three retrieved clips each in
-  `results/task4_musiccaps/qualitative_retrieval.json`.
-- The inspected Task 4 human-evaluation sheet contains 20 rows with no completed
-  listener ratings. It is not evidence of completed human evaluation.
