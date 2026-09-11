@@ -46,6 +46,32 @@ Sources: `results/task1_bert/metrics.json`,
 `results/task4_musiccaps/test_metrics.json`, and
 `results/musiccaps_supervised/mfcc_tau/test_metrics.json`.
 
+## Dataset Files
+
+Due to repository size limitations, the `data/` directory is not included in this repository. 
+The directory contains the raw data, processed features, graph representations, and train/validation/test splits required to reproduce the experiments.
+
+To reproduce the results, download the dataset directory from the following link:
+
+**Dataset download link:**  
+[ADD_DATASET_LINK_HERE]
+
+After downloading, extract the contents and place the `data/` directory directly inside the repository root so that the structure becomes:
+
+```text
+gnn-bert-music-context/
+├── data/
+│   ├── raw/
+│   ├── processed/
+│   │   ├── GTZAN/
+│   │   ├── mtat/
+│   │   └── musiccaps/
+│   └── splits/
+├── src/
+├── results/
+├── notebooks/
+└── report/
+
 ## Layout
 
 ```text
