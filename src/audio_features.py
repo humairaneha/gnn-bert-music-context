@@ -1,13 +1,17 @@
-"""Dispatch dataset preprocessing from the repository root.
+"""
+audio_features.py -- preprocessing entry point.
 
+Dispatches to the dataset-specific pipeline. Each of those is a single
+config-block-driven script; this file exists to give the repository the
+interface the project specification asks for.
+
+    python src/audio_features.py --dataset gtzan
     python src/audio_features.py --dataset mtat
     python src/audio_features.py --dataset musiccaps
-    python src/audio_features.py --dataset gtzan
 
-MTAT and MusicCaps extract segment features and write parquet splits.
-The current GTZAN target validates existing parquet splits and writes label
-metadata; it requires data/processed/GTZAN/{train,val,test}.parquet.
-Dataset-specific settings are defined in each target module.
+Every pipeline shares the same stages and writes the same columns:
+    audio -> segments -> chroma/MFCC -> mean+std pooling -> stratified split
+    -> data/processed/<dataset>/{train,val,test}.parquet
 """
 import argparse
 import runpy
@@ -15,9 +19,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 
-# Filenames are matched EXACTLY, including case. macOS is case-insensitive by
-# default so a mismatch works locally and then fails on a Linux checkout, which
-# is the worst possible time to find out.
+
 TARGETS = {
     "gtzan":     "GTZAN_features.py",
     "mtat":      "MTAT_features.py",
