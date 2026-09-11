@@ -1,6 +1,6 @@
 # GNN-BERT Music Context Understanding
 
-CSE425 supervised neural network project covering four tasks across MusicCaps,
+CSE715 supervised neural network project covering four tasks across MusicCaps,
 GTZAN, and MagnaTagATune: BERT tagging, audio graph classification, GNN–BERT
 fusion, and contrastive audio–text retrieval.
 
