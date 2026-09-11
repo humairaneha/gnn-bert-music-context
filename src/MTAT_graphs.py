@@ -29,7 +29,7 @@ from torch_geometric.data import Data
 # ===========================================================================
 
 # --- paths ------------------------------------------------------------------
-DATA_DIR = Path("data/processed/GTZAN")
+DATA_DIR = Path("data/processed/mtat")
 GRAPH_DIR = DATA_DIR / "graphs"
 GRAPH_SAMPLE_DIR = DATA_DIR / "graph_samples"
 
