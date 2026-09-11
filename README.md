@@ -55,7 +55,7 @@ The directory contains the raw data, processed features, graph representations, 
 To reproduce the results, download the dataset directory from the following link:
 
 **Dataset download link:**  
-[ADD_DATASET_LINK_HERE]
+[https://drive.google.com/drive/folders/16CbINoBLB5tHmHbxkG8fRut24C0K9Ppj?usp=sharing]
 
 After downloading, extract the contents and place the `data/` directory directly inside the repository root so that the structure becomes:
 
