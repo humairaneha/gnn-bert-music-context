@@ -1,5 +1,5 @@
 """
-gnn_model.py -- GNN encoders, re-exported under the name the specification uses.
+gnn_model.py -- GNN encoders, public model interfaces.
 
 Task 3 / Task 4 (multi-label, MagnaTagATune and MusicCaps):
     GraphSAGE          three SAGEConv layers, mean-pool readout, multi-label head

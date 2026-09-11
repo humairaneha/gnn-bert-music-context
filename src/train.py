@@ -1,16 +1,13 @@
-"""
-train.py -- single entry point for training any task.
+"""Run a task-specific training pipeline from the repository root.
 
-Thin dispatcher. The real implementations are the task scripts, which are
-config-block driven and take no command-line arguments; this file exists to
-satisfy the required repository layout and to give one obvious place to start.
+Dataset and model settings are defined in the target module's configuration.
 
-    python src/train.py --task 1                 # BERT on MusicCaps captions
-    python src/train.py --task 2                 # GTZAN GNN + baselines
-    python src/train.py --task 3                 # MTAT GNN-only
-    python src/train.py --task 3 --variant mlp   # MTAT no-graph control
+    python src/train.py --task 1
+    python src/train.py --task 2
+    python src/train.py --task 3
+    python src/train.py --task 3 --variant mlp
     python src/train.py --task 3 --variant fusion
-    python src/train.py --task 4                 # MusicCaps contrastive
+    python src/train.py --task 4
     python src/train.py --task 4 --variant supervised
 """
 import argparse
@@ -20,7 +17,7 @@ from pathlib import Path
 HERE = Path(__file__).parent
 
 TARGETS = {
-    ("1", "default"):    "bert_musiccaps_task1.py",   # rename to match your file
+    ("1", "default"):    "bert_musiccaps_task1.py",
     ("2", "default"):    "GTZAN_gnn.py",
     ("3", "default"):    "gnn.py",
     ("3", "mlp"):        "task3_mlp_nograph.py",

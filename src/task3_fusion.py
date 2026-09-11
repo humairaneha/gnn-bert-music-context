@@ -1,40 +1,18 @@
-"""
-task3_fusion.py -- GNN-BERT fusion for Task 3, all ablation rows in one file.
+"""Train and compare MagnaTagATune text and audio–text models.
 
-Implements the fusion the brief specifies:
+Modes:
+    bert         BERT CLS classifier
+    concat       GNN readout concatenated with BERT CLS
+    crossattn    graph-query attention over BERT tokens
+    mlp_bert     mean-pooled audio MLP with BERT CLS
+    tags_linear  classifier on raw instrument-tag vectors
 
-    A = softmax(QK^T / sqrt(d)),   Q = g W_Q,  K = H_text W_K
-    z = CONCAT(g, A H_text),       y_hat = sigmoid(W z)
+BERT is frozen and unique descriptions are cached. The audio and fusion
+parameters are trained on genre and mood targets. Shared metrics and training
+settings are imported from gnn.py. The MLP and tag-vector controls distinguish
+representation choices from the information supplied by each modality.
 
-and runs every row of the required ablation, plus two controls that are not in
-the brief but without which the required rows cannot be interpreted.
-
-MODES
-    bert         BERT CLS only, no audio                    (required ablation)
-    concat       GNN + BERT CLS, early concatenation        (required ablation)
-    crossattn    GNN + BERT tokens, cross-attention         (the deliverable)
-    mlp_bert     mean-pooled MLP + BERT CLS                 (isolates the GRAPH)
-    tags_linear  linear probe on the raw instrument tags    (isolates BERT)
-
-Why the two extra rows. If crossattn beats bert-only, that shows AUDIO helps --
-it says nothing about whether the GRAPH helped, because the GNN-only experiments
-already showed a plain mean-pooled MLP matches the GNN on this data. mlp_bert is
-the row that separates those. And since the text here is a template rendering of
-the instrument tags, a linear model on the raw 91-d tag vector carries the same
-information BERT does; tags_linear says whether BERT contributes anything over
-the tags themselves.
-
-BERT IS FROZEN AND CACHED. 110M parameters against ~12k templated sentences
-drawn from a fixed tag vocabulary would memorise instantly, and the text is
-deterministic per clip, so each unique string is encoded exactly once and looked
-up by track_id. The GNN branch is NOT cached -- g is recomputed every forward
-pass so gradients reach the SAGEConv weights, which is what makes this end-to-end
-fusion rather than a two-stage pipeline.
-
-Every metric, threshold and hyperparameter is imported from task3_gnn_only.py so
-that these rows and the GNN-only / MLP rows are directly comparable.
-
-    python src/task3_fusion.py
+    python src/train.py --task 3 --variant fusion
 """
 
 from __future__ import annotations

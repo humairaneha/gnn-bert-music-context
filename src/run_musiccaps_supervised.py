@@ -1,17 +1,11 @@
-"""
-run_musiccaps_supervised.py -- supervised GNN on the MusicCaps graphs.
+"""Train the supervised audio-only GNN reference on MusicCaps.
 
-The Task 4 deliverable asks for zero-shot tag prediction "vs the Task 3
-supervised model". Your Task 3 model was trained on MagnaTagATune, with a
-different label space, different audio and different splits -- so comparing a
-MusicCaps zero-shot number against it would be meaningless. This produces the
-supervised reference on the SAME data, which is what makes that comparison real.
+Reuses gnn.py with MusicCaps paths and label metadata. This provides a
+supervised tagging reference on the retrieval dataset, avoiding comparison
+with the different MagnaTagATune label space. It is an audio-only reference,
+not a supervised GNN–BERT fusion model.
 
-It reuses task3_gnn_only.py unchanged and only overrides the paths, so the model,
-loss, pos_weight cap, threshold tuning and metrics are identical to every other
-row in the project.
-
-    python src/run_musiccaps_supervised.py
+    python src/train.py --task 4 --variant supervised
 """
 
 from pathlib import Path

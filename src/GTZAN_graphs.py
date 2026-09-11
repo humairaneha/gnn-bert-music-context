@@ -1,40 +1,15 @@
-"""
-mfcc_graphs.py
+"""Build GTZAN segment graphs from prepared MFCC feature splits.
 
-Graph creation only for the MFCC-only pipeline.
+Inputs: data/processed/GTZAN/{train,val,test}.parquet and label_space.json.
+Each node contains a standardized 26-dimensional pooled MFCC vector. Temporal
+edges join adjacent segments; the configured similarity policy adds links
+between non-adjacent segments. Edge attributes are
+[is_temporal, similarity_score]. Each graph has one integer genre target.
 
-Reads:
-    data/processed/train.parquet
-    data/processed/val.parquet
-    data/processed/test.parquet
-    data/processed/label_space.json
+Graph caches and statistics are written to data/processed/GTZAN/graphs/.
+Individual training examples are exported to its sibling graph_samples/.
 
-Builds one PyTorch Geometric graph per track using the SAME graph construction
-used in mfcc_only.py:
-
-    node feature:
-        standardized 26-d MFCC pooled feature
-
-    edges:
-        temporal edges between adjacent segments
-        +
-        similarity edges between non-adjacent segments when
-        track-centered cosine similarity > TAU
-
-    edge_attr:
-        [is_temporal, similarity_score]
-
-    target:
-        one integer genre class per graph
-
-Saves:
-    data/processed/graphs/train_mfcc_<policy>.pt
-    data/processed/graphs/val_mfcc_<policy>.pt
-    data/processed/graphs/test_mfcc_<policy>.pt
-    data/processed/graphs/graph_stats_<policy>.json
-
-Also exports 20 individual training graphs to:
-    data/processed/graph_samples/
+    python src/graph_builder.py --dataset gtzan
 """
 
 from __future__ import annotations

@@ -1,17 +1,13 @@
-"""
-audio_features.py -- preprocessing entry point.
+"""Dispatch dataset preprocessing from the repository root.
 
-Dispatches to the dataset-specific pipeline. Each of those is a single
-config-block-driven script; this file exists to give the repository the
-interface the project specification asks for.
-
-    python src/audio_features.py --dataset gtzan
     python src/audio_features.py --dataset mtat
     python src/audio_features.py --dataset musiccaps
+    python src/audio_features.py --dataset gtzan
 
-Every pipeline shares the same stages and writes the same columns:
-    audio -> segments -> chroma/MFCC -> mean+std pooling -> stratified split
-    -> data/processed/<dataset>/{train,val,test}.parquet
+MTAT and MusicCaps extract segment features and write parquet splits.
+The current GTZAN target validates existing parquet splits and writes label
+metadata; it requires data/processed/GTZAN/{train,val,test}.parquet.
+Dataset-specific settings are defined in each target module.
 """
 import argparse
 import runpy

@@ -1,23 +1,15 @@
-"""
-fusion_model.py -- GNN-BERT fusion, re-exported under the specification's name.
+"""Public interfaces for GNN–BERT fusion, implemented in task3_fusion.py.
 
-    CrossAttention   single-query cross-attention. The graph readout g is ONE
-                     query attending over the L text tokens:
-                         A = softmax(g W_Q (H W_K)^T / sqrt(d))
-                         z = CONCAT(g, A H W_V)
-                     Padded positions are masked to -inf before the softmax.
+CrossAttention uses the graph readout as a query over text tokens and masks
+padding before softmax. FusionModel supports:
+    bert         BERT CLS features
+    concat       GNN readout concatenated with BERT CLS
+    crossattn    GNN readout with token-level cross-attention
+    mlp_bert     mean-pooled audio MLP with BERT CLS
+    tags_linear  classifier on instrument-tag vectors
 
-    FusionModel      one class, five ablation modes:
-                       bert         BERT CLS only, no audio
-                       concat       GNN + BERT CLS, early concatenation
-                       crossattn    GNN + BERT tokens, cross-attention
-                       mlp_bert     mean-pooled MLP + BERT CLS  (isolates the GRAPH)
-                       tags_linear  linear probe on raw tags    (isolates BERT)
-
-The last two are not in the specification but are what make the first three
-interpretable: beating BERT-only shows that AUDIO helps, not that the GRAPH does.
-
-Implementation lives in task3_fusion.py.
+The no-graph and raw-tag controls help distinguish the contributions of graph
+message passing and BERT encoding from the input information itself.
 """
 
 from task3_fusion import CrossAttention, FusionModel

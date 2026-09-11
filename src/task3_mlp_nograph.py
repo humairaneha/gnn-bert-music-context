@@ -1,22 +1,13 @@
-"""
-task3_mlp_nograph.py -- the no-graph control for Task 3.
+"""Train a no-graph audio baseline for MagnaTagATune.
 
-This is the baseline that decides whether the graph is doing anything. It takes
-the SAME cached graphs, throws away every edge, mean-pools the 5 segment vectors
-into one 26-d vector per clip, and trains an MLP on that.
+Reads the cached segment graphs but does not use their edges. Segment vectors
+are mean-pooled and passed through an MLP. Splits, loss utilities, threshold
+tuning, metrics, and early-stopping settings are shared with gnn.py. The model
+provides a comparison for the GNN's use of graph structure.
 
-The comparison is deliberately airtight. Splits, loss, pos_weight cap, threshold
-tuning, metrics and early stopping are all imported from task3_gnn_only.py
-rather than reimplemented, so the ONLY difference between the two rows of the
-results table is whether message passing happened. If the GNN does not clear
-this, the edges are decoration -- and no amount of edge-policy tuning fixes that.
+Build the graph caches with src/graph_builder.py --dataset mtat first.
 
-It also satisfies the rubric's "at least two baselines with fair experimental
-setup" row, alongside the prior baseline that task3_gnn_only.py already reports.
-
-Run task3_gnn_only.py first (it writes the graphs this reads), then:
-
-    python src/task3_mlp_nograph.py
+    python src/train.py --task 3 --variant mlp
 """
 
 from __future__ import annotations

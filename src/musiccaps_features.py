@@ -1,55 +1,22 @@
-"""
-musiccaps_features.py -- Task 4 preprocessing, start to finish, in one file.
+"""Prepare paired MusicCaps audio, descriptions, and tag targets.
 
-Same shape as mtat_features.py -- same constant names, same function names, same
-staged parquet outputs -- joining two sources:
+Sources:
+    CLAPv2/MusicCaps                    audio and captions
+    humairaneha/MusicCaps-Curated-Tags   curated tag annotations
 
-    CLAPv2/MusicCaps                    audio + caption, 5,352 clips, 9.83 GB
-    humairaneha/MusicCaps-Curated-Tags  your 216 curated tags
+Audio and tags are joined by video ID when available, with caption matching
+as a fallback. The implementation checks caption uniqueness and filters target
+tags after the join. Targets use genre and mood categories.
 
-joined on `ytid`, which is MusicCaps' primary key and is inherited by both.
+Audio is resampled to 22,050 Hz, divided into two-second segments, and encoded
+as chroma and MFCC features. Outputs under data/processed/musiccaps/ include
+segmented_audio_data.parquet, segmented_audio_data_pooled.parquet,
+train.parquet, val.parquet, test.parquet, and label_space.json.
 
-Why MusicCaps for Task 4 and not MTAT: contrastive retrieval needs each caption
-to identify one clip. MTAT has no captions, and the templated instrument
-sentences used in Task 3 repeat across hundreds of clips, which caps R@1 below 1
-no matter how good the model is. MusicCaps captions are expert-written free text,
-one per clip. This is also the first point in the project where BERT's
-pretraining is genuinely exercised rather than acting as a lookup over a small
-tag vocabulary.
+inspect_source() reads source schema information before feature extraction.
+Completed extraction and pooling caches are reused on subsequent runs.
 
-Pipeline:
-    1. Join audio to tags on ytid (falls back to caption text if ytid is absent
-       from the mirror). Report how many tagged clips actually have audio.
-    2. Resample to 22,050 Hz, peak-normalize, cut each 10 s clip into 2 s
-       non-overlapping segments -> 5 segments per clip.
-    3. Per segment: chroma_stft (12 x 87) and MFCC (13 x 87), pooled to
-       chroma_pooled (24-d) and mfcc_pooled (26-d).
-    4. Multi-label stratified 70/15/15 split. NO grouping: MusicCaps clips come
-       from distinct YouTube videos, so there is no shared-recording problem of
-       the kind that forced song-grouping on MTAT.
-    5. Write every stage to parquet, same as before.
-
-The curated repo has three configs. `main` holds the metadata, caption and 216
-bare one-hot tag columns; `tag_vocabulary` holds the tag -> semantic category
-mapping (Genre, Instrument, Mood, Vocal, Tempo). Targets are taken from Genre
-and Mood only.
-
-Note on the join: the audio mirror has no ytid column, and the curated CSV's
-ytid is partly corrupted -- IDs beginning with "-" were mangled to "#NAME?" by a
-spreadsheet round-trip. The caption text is therefore the safer key, and since
-MusicCaps captions are unique per clip it is a valid one. build_clip_table()
-asserts that uniqueness rather than assuming it.
-
-Run inspect_source() FIRST. It streams one row from each dataset, prints the
-columns and sample rate, and costs nothing. The 9.83 GB download only starts
-when you call main().
-
-    from musiccaps_features import inspect_source
-    inspect_source()
-
-then
-
-    python src/musiccaps_features.py
+    python src/audio_features.py --dataset musiccaps
 """
 
 from __future__ import annotations
@@ -66,12 +33,12 @@ from datasets import Dataset, Features, Sequence, Value, load_dataset
 
 
 # ===========================================================================
-# 0. CONFIGURATION -- this is the only block you need to edit
+# 0. CONFIGURATION -- dataset and model settings
 # ===========================================================================
 
 # --- source -----------------------------------------------------------------
 AUDIO_REPO = "CLAPv2/MusicCaps"                      # pre-downloaded audio mirror
-TAGS_REPO = "humairaneha/MusicCaps-Curated-Tags"     # your curated tags
+TAGS_REPO = "humairaneha/MusicCaps-Curated-Tags"     # curated tag annotations
 OUT_DIR = Path("data/processed/musiccaps")
 
 SEGMENTED_PARQUET = OUT_DIR / "segmented_audio_data.parquet"
@@ -270,7 +237,7 @@ def build_clip_table(audio_repo=AUDIO_REPO, tags_repo=TAGS_REPO,
               f"have audio)")
         print(f"tagged but no audio: {len(tag_index.keys() - have)}")
 
-    # --- label space, computed on the clips we ACTUALLY have ---
+    # --- label space, computed on clips with matched audio and annotations ---
     # A tag near the threshold can drop below it once the ~3% without audio are
     # removed, so the floor is applied after the join, not before.
     tag_cols = {
@@ -487,7 +454,7 @@ def add_pooled(batch):
 def build_pooled_dataset(in_path=SEGMENTED_PARQUET, out_path=POOLED_PARQUET,
                          verbose=VERBOSE):
     """
-    Its own stage because pooling is the part you are most likely to revisit --
+    Pool saved frame features independently of audio extraction --
     a change here is a two-minute rerun over the saved frame features rather
     than another pass over 5,352 audio clips.
     """

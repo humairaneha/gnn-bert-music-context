@@ -1,53 +1,16 @@
-"""
-unified_features.py
+"""Validate prepared dataset splits and write label_space.json.
 
-Shared post-split utility for the three current datasets:
-    1. GTZAN
-    2. MagnaTagATune (MTAT)
-    3. MusicCaps
+The default input directory is data/processed/GTZAN/. It must contain
+train.parquet, val.parquet, and test.parquet. This utility reads label and ID
+columns, checks split disjointness, and records the target order and counts.
+It does not extract audio features.
 
-Assumption
-----------
-Feature extraction and train/val/test splitting have already been completed.
-Each dataset directory contains:
+GTZAN label names come from the genre column. MTAT and MusicCaps use positional
+multi-hot labels, so their names require matching metadata or the configured
+fallback vocabulary. When changing the target vocabulary, update METADATA_PATH
+or retain the matching label_space.json. Vector lengths are validated.
 
-    train.parquet
-    val.parquet
-    test.parquet
-
-This script reads ONLY the small label/id columns from those parquet files,
-auto-detects the dataset schema, validates the three splits, and writes one
-common label_space.json structure:
-
-{
-    "tags": [...],               # prediction targets, exact model-output order
-    "genre": [...],
-    "mood": [...],
-    "instrument": [...],         # input-side vocabulary when available
-    "n_genre": ...,
-    "n_mood": ...,
-    "n_instrument": ...,
-    "category_of_tag": {...},
-    "train_positives": [...],    # same order as "tags"
-    "n_train_clips": ...         # all training rows/segments
-}
-
-Important
----------
-GTZAN stores its class value directly in the parquet ("genre"), so its
-vocabulary can be recovered automatically.
-
-MTAT and MusicCaps store positional multi-hot vectors in the parquet. Their
-semantic label NAMES cannot be reconstructed from those vectors alone.
-Therefore this file contains the exact current vocabularies as fallbacks.
-If you later change MIN_POSITIVES / target categories, either:
-
-    - keep the old label_space.json beside the parquet before running this file,
-      or
-    - set METADATA_PATH below to the correct label_space.json
-
-The script validates vector lengths, so it will FAIL rather than silently attach
-the wrong label names to a changed dataset.
+    python src/GTZAN_features.py
 """
 
 from __future__ import annotations
@@ -444,7 +407,7 @@ def build_musiccaps(train_path, val_path, test_path, metadata):
         )
 
     if genre + mood != tags:
-        # We require one universal target ordering across all datasets.
+        # Keep target ordering consistent across datasets.
         raise ValueError(
             "MusicCaps metadata ordering must satisfy tags == genre + mood. "
             "This is required so train_positives and model outputs have one "

@@ -1,53 +1,18 @@
-"""
-mfcc_gnn.py
+"""Train and evaluate a genre classifier on cached GTZAN MFCC graphs.
 
-MFCC-only GNN training + complete evaluation.
+Inputs:
+    data/processed/GTZAN/graphs/{train,val,test}_mfcc_<EDGE_POLICY>.pt
+    data/processed/GTZAN/label_space.json
 
-This file is intentionally separated from graph creation.
+Build the graphs with src/GTZAN_graphs.py first. This module loads the graph
+features, trains with cross-entropy, selects a validation checkpoint, and saves
+predictions, metrics, curves, confusion matrices, and embeddings under
+results/task2/<RUN_NAME>/.
 
-It DOES NOT:
-    - read raw audio
-    - read parquet feature rows
-    - standardize MFCCs
-    - construct graph edges
+The CNN comparison uses a stored segment-level validation reference; the GNN
+scores are at track level. These evaluation units differ.
 
-Those tasks belong to mfcc_graphs.py.
-
-This file ONLY:
-    1. loads saved PyG graphs
-    2. builds the MFCC-only GNN
-    3. trains with CrossEntropyLoss
-    4. selects the best validation checkpoint
-    5. evaluates the best model on train/val/test
-    6. saves all evaluation artifacts
-
-Expected graph files:
-    data/processed/graphs/train_mfcc_<EDGE_POLICY>.pt
-    data/processed/graphs/val_mfcc_<EDGE_POLICY>.pt
-    data/processed/graphs/test_mfcc_<EDGE_POLICY>.pt
-
-Expected label file:
-    data/processed/label_space.json
-
-Evaluation outputs:
-    results/mfcc_gnn/<RUN_NAME>/
-        best_model.pt
-        training_history.json
-        loss_curve.png
-        f1_curve.png
-        test_metrics.json
-        classification_report.json
-        classification_report.txt
-        per_class_metrics.csv
-        confusion_matrix.npy
-        confusion_matrix.png
-        test_predictions.csv
-        gnn_embeddings.pt
-        tsne.png
-        class_index.json
-        cnn_gnn_comparison.json
-        cnn_gnn_comparison.csv
-        cnn_gnn_comparison.png
+    python src/train.py --task 2
 """
 
 from __future__ import annotations
@@ -96,7 +61,7 @@ RESULT_DIR = Path("results/task2")
 
 FEATURE = "mfcc"
 
-# Must match the graph build created by mfcc_graphs.py:
+# Match the policy used by GTZAN_graphs.py:
 #   "tau" | "percentile" | "topk"
 EDGE_POLICY = "tau"
 
@@ -122,7 +87,7 @@ SAGE_DROPOUT = 0.0
 
 PATIENCE = 15
 
-# Same rule as mfcc_only.py:
+# Checkpoint selection constraint:
 # a new validation best is rejected when train-val Macro-F1 gap is too large.
 MAX_OVERFIT_GAP = 0.20
 
@@ -131,13 +96,9 @@ TSNE_MAX_POINTS = 3000
 # ---------------------------------------------------------------------------
 # CNN comparison reference
 # ---------------------------------------------------------------------------
-# Valid result recorded by cnn_eval.ipynb:
-# best segment-level validation Macro-F1 = 0.7470
-# best segment-level validation Micro-F1 = 0.7508
-#
-# The notebook's later track-level CNN evaluation failed before producing a
-# valid result, so the comparison output explicitly marks this CNN result as
-# SEGMENT-LEVEL validation rather than pretending it is a track-level score.
+# Stored CNN reference: segment-level validation Macro-F1 0.7470 and
+# Micro-F1 0.7508. Its source notebook is not included in this checkout.
+# The GNN is evaluated per track, so these scores use different units.
 CNN_REFERENCE_NAME = "CNN mel-spectrogram"
 CNN_REFERENCE_EVAL_LEVEL = "segment-level"
 CNN_REFERENCE_SPLIT = "validation"

@@ -1,41 +1,17 @@
-"""
-task4_contrastive.py -- Task 4: contrastive GNN-BERT alignment.
+"""Train a contrastive GNN–BERT dual encoder and evaluate retrieval.
 
-Learns a shared embedding space between audio graphs and their captions with
-InfoNCE, then uses it for two things:
+Projects graph and frozen BERT representations into a shared embedding space.
+Evaluation includes bidirectional R@1/5/10, tag-name similarity scores, and
+qualitative retrieval examples. Shared utilities come from gnn.py and
+task3_fusion.py; run_musiccaps_task4.py configures the MusicCaps dataset paths.
 
-    RETRIEVAL      caption -> audio and audio -> caption, R@1/5/10
-    ZERO-SHOT TAGS score every graph against the 53 tag names encoded as text,
-                   with no supervised tag training at all, and compare against
-                   the supervised Task 3 rows.
+Same-caption pairs are masked out of training negatives. Group-aware retrieval
+counts any candidate with the matching caption as relevant. Caption-uniqueness
+statistics are saved so the relevance definition can be interpreted alongside
+the recall values. Supervised tagging comparisons require matching labels and
+held-out examples.
 
-Reuses everything: the cached graphs from mtat_graphs.py, the frozen BERT text
-cache from task3_fusion.py, and the metric code from task3_gnn_only.py, so the
-zero-shot numbers are directly comparable to the supervised ones.
-
-THE DUPLICATE-CAPTION PROBLEM, AND WHAT THIS FILE DOES ABOUT IT
---------------------------------------------------------------
-MTAT has no captions. The text is a template over ~91 instrument tags, so many
-clips share a byte-identical caption. That breaks vanilla InfoNCE twice:
-
-  training    two clips with the same caption in one batch become each other's
-              negatives, so the loss asks the model to separate two things it
-              cannot distinguish, and gradients fight themselves.
-              -> fixed by masking same-caption pairs out of the negatives.
-
-  evaluation  "the correct clip" is not unique, so plain R@1 is capped at
-              1/group_size no matter how good the model is.
-              -> fixed by GROUP-AWARE relevance: a query scores a hit if ANY
-                 clip sharing its caption appears in the top K. This is the
-                 standard treatment when relevance is one-to-many, and it must
-                 be stated in the report rather than quietly applied.
-
-main() prints the caption-uniqueness statistics before training so the numbers
-can be read with the right amount of scepticism. If uniqueness is very low, the
-retrieval table is weak evidence however it is computed -- but the zero-shot tag
-deliverable is unaffected, because it never asks "which clip is this".
-
-    python src/task4_contrastive.py
+    python src/train.py --task 4
 """
 
 from __future__ import annotations
@@ -253,16 +229,14 @@ def qualitative_examples(G, T, texts, ids, y, labels, n=N_QUALITATIVE, seed=SEED
 
 def human_eval_sheet(G, T, texts, ids, out_dir=RESULT_DIR, n=20, seed=SEED):
     """
-    Writes the rating sheet for the human evaluation the brief requires:
-    "minimum 5 listeners rate whether retrieved clip matches caption on
-    scale [1, 5]".
+    Create a caption–clip rating sheet for five listeners using a 1–5 scale.
 
     One row per (caption, top-1 retrieved clip) pair, with blank columns for
     five raters. The clip id is included so a listener can pull the audio; the
-    similarity score is included for your analysis but should NOT be shown to
+    similarity score is included for analysis but should not be shown to
     raters, since knowing the model was confident biases the rating.
 
-    This is the one Task 4 deliverable that code cannot produce on its own.
+    Ratings are collected from listeners; this function only creates the sheet.
     """
     import csv
     rng = np.random.default_rng(seed)
@@ -291,11 +265,8 @@ def zero_shot_scores(model, G, labels, H_tags):
     """
     Score every graph against every tag name embedded through the TEXT tower.
 
-    No tag supervision is involved: the model has only ever seen instrument
-    captions. Asking it about genre and mood words is genuine zero-shot
-    transfer, and it may well land near chance -- which is a reportable result,
-    not a failure. The comparison against the supervised Task 3 rows is the
-    point of the deliverable.
+    The contrastive objective does not use tag targets. Tag names are encoded
+    as text and compared with graph embeddings using cosine similarity.
     """
     model.eval()
     cls = torch.stack([H_tags[t][0] for t in labels]).to(DEVICE)

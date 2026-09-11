@@ -1,68 +1,25 @@
-"""
-mtat_features.py -- Task 3 preprocessing, start to finish, in one file.
+"""Prepare MagnaTagATune features, text, and multi-label dataset splits.
 
-Same shape as audio_features.py (the GTZAN/Task 2 version) -- same constant
-names, same function names, same output columns -- with the three changes MTAT
-forces:
+Downloads annotations and audio from confit/magnatagatune. Instrument and vocal
+tags form the input descriptions; genre and mood tags form disjoint prediction
+targets. MIN_POSITIVES controls target filtering.
 
-    1. MULTI-LABEL targets instead of one genre int. The 188-tag vocabulary is
-       partitioned into three disjoint groups: instrument/vocal tags become the
-       BERT input text, genre + mood tags become the prediction targets.
-    2. GROUPED splits. MTAT's 25,863 clips come from only 5,405 source songs
-       (~5.8 clips per song), so the standard folder split puts different
-       29-second slices of the SAME recording in train and test.
-    3. No raw waveforms. 17,623 usable clips x 5 segments is ~88k rows;
-       storing waveforms too would produce a ~28 GB parquet.
+Audio is loaded at 22,050 Hz and divided into five-second segments. Chroma and
+MFCC frame features are pooled into 24- and 26-dimensional vectors. GROUP_BY
+selects song, artist, or clip grouping for the train/validation/test split.
+Feature standardization is performed later by MTAT_graphs.py on training data.
 
-Pipeline:
-    1. Pull annotations_final.csv, clip_info_final.csv and mp3.zip from the
-       confit/magnatagatune HF repo; unzip the audio.
-    2. Partition the 188 tags into instrument / genre / mood groups, drop tags
-       below MIN_POSITIVES (targets only -- instrument tags keep everything),
-       and report anything unassigned for review.
-    3. Load each clip mono at 22,050 Hz, peak-normalize, cut into 5 s
-       non-overlapping segments (29.1 s clip -> 5 segments).
-    4. Per segment: chroma_stft (12 x 216) and MFCC (13 x 216), pooled to
-       chroma_pooled (24-d) and mfcc_pooled (26-d).
-    5. Build the BERT input sentence from each clip's instrument/vocal tags.
-    6. Song-grouped 70/15/15 split (GROUP_BY selects song / artist / clip).
-    7. Write every stage to parquet, same as the GTZAN pipeline:
-           segmented_audio_data.parquet         frame-level features
-           segmented_audio_data_pooled.parquet  + pooled features
-           train.parquet / val.parquet / test.parquet
-           label_space.json
+Outputs under data/processed/mtat/:
+    segmented_audio_data.parquet         frame features
+    segmented_audio_data_pooled.parquet  pooled features
+    train.parquet, val.parquet, test.parquet
+    label_space.json
 
-Every stage is resumable: if a stage's parquet already exists it is reused
-rather than recomputed, so a crash three hours into feature extraction does not
-cost you the whole run. Delete the file to force a rebuild.
+Completed extraction and pooling files are reused. Removing these caches
+requires recomputing their stages. inspect_tags() checks the tag partition
+without running audio extraction.
 
-Every stage is a datasets.map(batched=True, batch_size=BATCH_SIZE) -- the same
-pattern as your GTZAN notebooks, including the one-clip-in / many-segments-out
-flattening map. Arrow memory-maps to disk, so peak RAM stays at one batch
-regardless of corpus size. ~88,000 segments x (12+13) x 216 frames is roughly
-1.9 GB of frame features; holding that in one pandas DataFrame would need well
-over 16 GB.
-
-Note on resampling: MTAT audio is natively 16 kHz. It is loaded at 22,050 Hz so
-that a 5 s segment gives exactly 216 frames, matching the GTZAN pipeline. See
-SAMPLE_RATE and MEL_FMAX in the configuration block.
-
-There are no command-line arguments. Set the constants in the CONFIGURATION
-block below, then:
-
-    python src/mtat_features.py
-
-or, from a notebook:
-
-    from mtat_features import main
-    train_df, val_df, test_df = main()
-
-Run inspect_tags() on its own first -- it does step 2 only, in seconds, and
-tells you whether the mood group survives MIN_POSITIVES before you commit an
-hour to feature extraction.
-
-Standardization is NOT done here, for the same reason as before: the scaler is
-fit on train only, inside mtat_graphs.load_splits().
+    python src/audio_features.py --dataset mtat
 """
 
 from __future__ import annotations
@@ -80,7 +37,7 @@ from datasets import Dataset, Features, Sequence, Value, load_dataset
 
 
 # ===========================================================================
-# 0. CONFIGURATION -- this is the only block you need to edit
+# 0. CONFIGURATION -- dataset and model settings
 # ===========================================================================
 
 # --- source -----------------------------------------------------------------
@@ -137,18 +94,11 @@ N_CHROMA = 12                              # -> chroma_pooled is 24-d
 N_MFCC = 13                                # -> mfcc_pooled is 26-d
 N_FFT = 2048
 HOP_LENGTH = 512
-STD_DDOF = 1                               # matches torch.std, as before
+STD_DDOF = 1                               # matches torch.std
 
 # --- what to store ----------------------------------------------------------
-# KEEP_FRAME_FEATURES stores the full (12, 216) and (13, 216) matrices, so the
-# saved dataset matches the GTZAN one column for column. That is about 1.9 GB
-# across ~88k segments -- large but the same order as your existing
-# segmented_audio_data.parquet, and it is what lets you revisit pooling or do
-# frame-level chord estimation later without re-extracting anything.
-#
-# KEEP_WAVEFORM stays off. Raw samples would add roughly 26 GB, and nothing
-# downstream of Task 3 reads them -- only the mel-spectrogram CNN baseline would,
-# and that baseline already exists on GTZAN.
+# Retain frame matrices to support alternate pooling without re-extraction.
+# Waveforms are omitted because graph training uses the extracted features.
 KEEP_FRAME_FEATURES = True
 KEEP_WAVEFORM = False
 
@@ -277,7 +227,7 @@ def partition_tags(ann: pd.DataFrame, min_positives: int = MIN_POSITIVES,
     """
     Intersects the three keyword lists above with the tag columns that actually
     exist in annotations_final.csv, applies the frequency floors, and reports
-    anything left unassigned so you can decide where it belongs.
+    unassigned tags for review.
 
     The floors differ by group on purpose. Genre and mood are predicted, so a
     rare tag there poisons Macro-F1. Instrument tags only ever appear in the
@@ -339,7 +289,7 @@ def partition_tags(ann: pd.DataFrame, min_positives: int = MIN_POSITIVES,
 def inspect_tags(min_positives: int = MIN_POSITIVES):
     """
     Step 2 only -- downloads the 21.5 MB annotations file and prints the
-    partition. Seconds, not an hour. Run this before committing to a full pass.
+    partition without extracting audio features.
     """
     ann, _ = load_annotations()
     return partition_tags(ann, min_positives)
@@ -544,9 +494,8 @@ DROP_SILENT = False  # True removes them outright
 
 def segment_and_extract(batch):
     """
-    Batched map function. One clip in, several segments out -- the same
-    flattening pattern as create_segmented_dataset() in your GTZAN notebook,
-    where the returned lists are longer than the input batch.
+    Extract multiple segment rows per input clip. Returned lists can be
+    longer than the input batch.
 
     Clips whose mp3 is missing, empty or unreadable simply contribute no rows.
     MTAT ships a handful of zero-byte files, and a silent zero-length track
@@ -716,10 +665,8 @@ def build_pooled_dataset(in_path: Path = SEGMENTED_PARQUET,
                          out_path: Path = POOLED_PARQUET,
                          verbose: bool = VERBOSE) -> Path:
     """
-    Stage 2, kept separate from extraction because pooling is the part you are
-    most likely to revisit. Swapping mean+std for something else is then a
-    two-minute rerun over the saved frame features, not another pass over
-    17,623 mp3s.
+    Pool saved frame features without decoding audio again.
+    Existing pooled output is reused until removed.
     """
     in_path, out_path = Path(in_path), Path(out_path)
     if out_path.exists():

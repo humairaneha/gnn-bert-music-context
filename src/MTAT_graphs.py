@@ -1,34 +1,15 @@
-"""
-mtat_graphs.py -- Task 3 graph construction, in one file.
+"""Build MagnaTagATune graphs from prepared parquet splits.
 
-Reads the parquet files written by mtat_features.py and produces one PyG graph
-per clip, ready for the GNN-BERT fusion model. Same constant names, same
-function names and the same edge policy as task2_gnn.py's graph section, with
-the two changes Task 3 forces:
+Reads data/processed/mtat/{train,val,test}.parquet and label metadata. Each
+clip becomes a PyTorch Geometric graph with segment features, temporal and
+similarity edges, text, and a multi-hot target of shape [1, n_genre + n_mood].
+PyG batches targets into [B, K] and text into a list of B strings.
 
-    y     is a multi-hot FLOAT vector of shape [1, n_genre + n_mood], not a
-          single class index. That shape is what lets PyG batch it to [B, K]
-          for BCEWithLogitsLoss.
+The feature scaler is fitted on training data and applied unchanged to
+validation and test data. Graph caches, statistics, and sample graphs are
+written under data/processed/mtat/.
 
-    text  is carried on the Data object so the graph and its caption never
-          drift apart through shuffling and batching. PyG collates non-tensor
-          attributes into a plain list, so batch.text is a list of B strings
-          that goes straight into the BERT tokenizer.
-
-There are no command-line arguments. Set the constants below, then:
-
-    python src/mtat_graphs.py
-
-which builds all three splits, prints the graph statistics, exports 20 example
-graphs, and caches the built graphs so training does not rebuild them. Or, from
-a notebook:
-
-    from mtat_graphs import load_splits, build_split_graphs
-    train, val, test, labels = load_splits()
-    train_graphs = build_split_graphs(train, feature="mfcc")
-
-Standardization happens here, not in preprocessing: the StandardScaler is fit on
-the TRAIN split only and applied unchanged to val and test.
+    python src/graph_builder.py --dataset mtat
 """
 
 from __future__ import annotations
@@ -44,7 +25,7 @@ from torch_geometric.data import Data
 
 
 # ===========================================================================
-# 0. CONFIGURATION -- this is the only block you need to edit
+# 0. CONFIGURATION -- dataset and model settings
 # ===========================================================================
 
 # --- paths ------------------------------------------------------------------

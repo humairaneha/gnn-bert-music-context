@@ -1,29 +1,15 @@
-"""
-task3_gnn_only.py -- GNN-only baseline for Task 3 (the "GNN-only" ablation row).
+"""Train the MagnaTagATune audio-only GNN baseline.
 
-Loads the PyG graphs built by mtat_graphs.py and does multi-label genre + mood
-classification. This is one of the four rows the Task 3 deliverable asks for
-(BERT-only, GNN-only, early concat, cross-attention); the fusion models reuse
-everything below the model class.
+Loads cached graphs from MTAT_graphs.py and predicts genre and mood tags.
+Metrics include pooled and category-specific F1 and AUC-PR. Decision thresholds
+are selected on validation data and then applied to test data; fixed-0.5 scores
+are saved separately. Training produces a checkpoint, thresholds, metrics,
+learning curves, and genre/mood embedding visualizations.
 
-Changes from the first draft, all of which affected the reported numbers:
+Fusion and no-graph models import shared training and evaluation utilities
+from this module. Set dataset and model constants in the configuration block.
 
-  1. Thresholds are TUNED on val and APPLIED to test. The old version defined
-     find_best_thresholds() twice and called it zero times, so every number came
-     from a fixed 0.5 cut -- which is the single biggest cause of the
-     precision << recall pattern in the per-tag results.
-  2. The final print showed val_result, not the test result.
-  3. AUC-PR is nan-safe. average_precision_score(average="macro") over a label
-     with no test positives silently poisons the mean.
-  4. Metrics are reported for genre and mood separately, since MTAT "mood" is
-     mostly tempo and dynamics and behaves nothing like genre.
-  5. t-SNE is coloured -- two panels, by genre and by mood.
-  6. The loss/F1 plot uses a twin axis; loss ~0.5 and F1 ~0.2 on one axis made
-     the F1 curve unreadable.
-
-There are no command-line arguments. Edit the CONFIG block, then:
-
-    python src/task3_gnn_only.py
+    python src/train.py --task 3
 """
 
 from __future__ import annotations
@@ -268,7 +254,7 @@ def plot_tsne(embeddings, y, labels, n_genre, train_counts, out_dir,
               max_points=TSNE_MAX_POINTS, top_k=TSNE_TOP_CLASSES, seed=SEED):
     """
     Two panels of the SAME embedding: coloured by genre, coloured by mood.
-    This is the "t-SNE of z coloured by genre and mood" deliverable.
+    Plot graph embeddings in separate genre and mood panels.
 
     Only the top_k most common primary labels get their own colour; everything
     else is grey "other", because 35 genres in one legend is unreadable and the

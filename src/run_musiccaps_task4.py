@@ -1,20 +1,11 @@
-"""
-run_musiccaps_task4.py -- Task 4 contrastive alignment on MusicCaps.
+"""Run contrastive audio–text alignment on MusicCaps.
 
-Runs task4_contrastive.py against the MusicCaps graphs instead of MTAT. This is
-the dataset the brief specifies for Task 4, and the reason matters: MusicCaps
-captions are expert-written free text, unique per clip, so "which clip does this
-caption describe" has exactly one answer and R@K measures what it should. MTAT's
-templated instrument sentences repeat across hundreds of clips, which caps R@1
-below 1 no matter how good the model is.
+Configures task4_contrastive.py and its shared utilities with MusicCaps graph,
+label, cache, and result paths. Retrieval uses the held-out audio–caption pairs.
+Run the supervised MusicCaps variant first to make its tagging metrics
+available for the zero-shot comparison.
 
-Overrides paths on the imported modules rather than editing them, so the MTAT
-Task 3 runs stay reproducible.
-
-Run run_musiccaps_supervised.py FIRST -- the zero-shot section compares against
-its output, and will just skip that line if it is missing.
-
-    python src/run_musiccaps_task4.py
+    python src/train.py --task 4
 """
 
 from pathlib import Path
