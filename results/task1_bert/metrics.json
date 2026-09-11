@@ -1,0 +1,14 @@
+{
+  "n_tags": 65,
+  "n_tags_with_test_examples": 65,
+  "test_clips": 504,
+  "macro_f1": 0.6015696556524082,
+  "micro_f1": 0.6394031500414479,
+  "macro_f1_scored_tags": 0.6015696556524082,
+  "micro_precision": 0.6007268951194185,
+  "micro_recall": 0.683402244536326,
+  "macro_auc_pr": 0.646171289397168,
+  "epochs_completed": 26.0,
+  "best_validation_loss": 0.322067528963089,
+  "best_checkpoint": "musiccaps_bert_task1/checkpoints/checkpoint-2750"
+}

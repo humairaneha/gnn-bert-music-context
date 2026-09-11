@@ -1,0 +1,36 @@
+{
+  "run": "mfcc_tau",
+  "feature": "mfcc",
+  "edge_policy": "tau",
+  "zero_edge_fraction_train": 0.4071,
+  "similarity_edges_mean_train": 0.87,
+  "test_at_0.5": {
+    "macro_f1": 0.17827565953610905,
+    "micro_f1": 0.2802197802197802,
+    "auc_pr": 0.1501512053579654,
+    "genre_macro_f1": 0.18570377817508182,
+    "genre_auc_pr": 0.1642220688250299,
+    "mood_macro_f1": 0.16624918173967695,
+    "mood_auc_pr": 0.12736980736367057
+  },
+  "test_tuned": {
+    "macro_f1": 0.16814912796987147,
+    "micro_f1": 0.23727810650887574,
+    "auc_pr": 0.1501512053579654,
+    "genre_macro_f1": 0.18073259535254826,
+    "genre_auc_pr": 0.1642220688250299,
+    "mood_macro_f1": 0.14777589506458536,
+    "mood_auc_pr": 0.12736980736367057
+  },
+  "baseline_prior": {
+    "macro_f1": 0.08498731330791194,
+    "micro_f1": 0.08825134822383791,
+    "auc_pr": 0.046162631338510736,
+    "genre_macro_f1": 0.07926919066843557,
+    "genre_auc_pr": 0.04263966893289979,
+    "mood_macro_f1": 0.09424522615277846,
+    "mood_auc_pr": 0.051866475233309416
+  },
+  "n_genre": 34,
+  "n_mood": 21
+}

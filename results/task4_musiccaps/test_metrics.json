@@ -1,0 +1,66 @@
+{
+  "caption_stats": {
+    "train": {
+      "clips": 3709,
+      "unique_captions": 3709,
+      "unique_fraction": 1.0,
+      "largest_group": 1,
+      "clips_sharing_a_caption": 0,
+      "shared_fraction": 0.0
+    },
+    "val": {
+      "clips": 794,
+      "unique_captions": 794,
+      "unique_fraction": 1.0,
+      "largest_group": 1,
+      "clips_sharing_a_caption": 0,
+      "shared_fraction": 0.0
+    },
+    "test": {
+      "clips": 796,
+      "unique_captions": 796,
+      "unique_fraction": 1.0,
+      "largest_group": 1,
+      "clips_sharing_a_caption": 0,
+      "shared_fraction": 0.0
+    }
+  },
+  "group_aware": true,
+  "caption_to_audio": {
+    "R@1": 0.0126,
+    "R@5": 0.0766,
+    "R@10": 0.1382,
+    "random_R@1": 0.001256,
+    "lift_R@1": 10.0,
+    "random_R@5": 0.006281,
+    "lift_R@5": 12.2,
+    "random_R@10": 0.012563,
+    "lift_R@10": 11.0
+  },
+  "audio_to_caption": {
+    "R@1": 0.0126,
+    "R@5": 0.0678,
+    "R@10": 0.1332,
+    "random_R@1": 0.001256,
+    "lift_R@1": 10.0,
+    "random_R@5": 0.006281,
+    "lift_R@5": 10.8,
+    "random_R@10": 0.012563,
+    "lift_R@10": 10.6
+  },
+  "temperature": 0.06716389954090118,
+  "random_baseline": {
+    "R@1": 0.0025,
+    "R@5": 0.0075,
+    "R@10": 0.0113
+  },
+  "zero_shot_tagging": {
+    "macro_f1": 0.09191221985314812,
+    "micro_f1": 0.11043481430185516,
+    "auc_pr": 0.05347061120016752,
+    "genre_macro_f1": 0.08520472688708147,
+    "genre_auc_pr": 0.05052917761203488,
+    "mood_macro_f1": 0.10277197036963696,
+    "mood_auc_pr": 0.05823293224762038
+  }
+}

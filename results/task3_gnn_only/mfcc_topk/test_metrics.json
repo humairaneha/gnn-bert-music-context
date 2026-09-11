@@ -1,0 +1,36 @@
+{
+  "run": "mfcc_topk",
+  "feature": "mfcc",
+  "edge_policy": "topk",
+  "zero_edge_fraction_train": 0.0,
+  "similarity_edges_mean_train": 2.0,
+  "test_at_0.5": {
+    "macro_f1": 0.24692148583435922,
+    "micro_f1": 0.4352371519753494,
+    "auc_pr": 0.23678297148224564,
+    "genre_macro_f1": 0.2772051767489023,
+    "genre_auc_pr": 0.26640312322962967,
+    "mood_macro_f1": 0.18279131683885608,
+    "mood_auc_pr": 0.17405794425249144
+  },
+  "test_tuned": {
+    "macro_f1": 0.25856527347239877,
+    "micro_f1": 0.4464879394496711,
+    "auc_pr": 0.23678297148224564,
+    "genre_macro_f1": 0.29280071286431714,
+    "genre_auc_pr": 0.26640312322962967,
+    "mood_macro_f1": 0.18606669593657177,
+    "mood_auc_pr": 0.17405794425249144
+  },
+  "baseline_prior": {
+    "macro_f1": 0.07055244722068438,
+    "micro_f1": 0.07547299668953936,
+    "auc_pr": 0.0392163874862317,
+    "genre_macro_f1": 0.07162238987230814,
+    "genre_auc_pr": 0.039845000421194515,
+    "mood_macro_f1": 0.06828668631136346,
+    "mood_auc_pr": 0.03788520715336931
+  },
+  "n_genre": 36,
+  "n_mood": 17
+}

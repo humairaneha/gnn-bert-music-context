@@ -1,0 +1,383 @@
+[
+  {
+    "query_caption": "A male vocalist sings this upbeat Arabic pop. The tempo is fast and enthusiastic with intense bass lines, keyboard arrangement , vigorous drumming, violin symphony, oud accompaniment with vocal backup and sound of clapping and tambourine beats. The song is energetic, vivacious, enthusiastic, engaging and compelling with a high energy dance vibe. This song is contemporary Pop.",
+    "query_clip": "mce5cc3c195c16",
+    "retrieved": [
+      {
+        "clip": "mc582bce660772",
+        "similarity": 0.5988,
+        "caption": "Male singers sing this vocal harmony. The song is medium tempo with steady drumming rhythm, cello playing the bass line, guitars strumming rhythm and various percussion hits. The song is chaotic and exciting. The song is an amateur band playing a retro pop song with audio quality.",
+        "caption_matches_query": false,
+        "tags": [
+          "indie",
+          "pop",
+          "fun",
+          "happy",
+          "psychedelic"
+        ]
+      },
+      {
+        "clip": "mcf494d2fb6eca",
+        "similarity": 0.5913,
+        "caption": "A female vocalist sings this spirited pop. The tempo is  medium fast with percussion accompaniment like congas, bongos and drums , tambourine beats,along with amplified flute like the Ney and rhythmic oud. The music is catchy, youthful, groovy, breezy, romantic, pleasant and spirited. This music is contemporary Folk Pop.",
+        "caption_matches_query": false,
+        "tags": [
+          "dance",
+          "electronic",
+          "folk",
+          "groove",
+          "pop",
+          "romantic"
+        ]
+      },
+      {
+        "clip": "mc7af13c1c03cd",
+        "similarity": 0.5749,
+        "caption": "This hip-hop song features a male voice rapping the main lyrics. This is accompanied by programmed percussion playing a simple beat. Hand claps are played on every alternate count. The synth plays a repetitive melody in loop. The bass plays the root notes of the chords in harmony with the synth. This is a moderate tempo song. This song can be played in a club.",
+        "caption_matches_query": false,
+        "tags": [
+          "dance",
+          "electronic",
+          "hip hop",
+          "rap"
+        ]
+      }
+    ]
+  },
+  {
+    "query_caption": "This is a tropical, Caribbean style song which has a melody that is played on a steel drum. The song has a very relaxing feel, which makes you feel as if you are on an island somewhere in paradise. The bassline is intricate and the percussion is laid-back.",
+    "query_clip": "mccbc4c0da1d6c",
+    "retrieved": [
+      {
+        "clip": "mc5f42fdd66ef4",
+        "similarity": 0.5392,
+        "caption": "This instrumental pop song features the main melody played on bells. This is accompanied by percussion playing a simple beat. A tambourine plays continuously in the background and the accents are on the alternate counts when counting 8 in a bar. A ukulele plays chords in the background. An accordion sound is also heard faintly in the background. There are no voices in this song. This song has a happy and uplifting mood. This song can be played in a happy scene in a children's movie.",
+        "caption_matches_query": false,
+        "tags": [
+          "pop",
+          "energetic",
+          "happy"
+        ]
+      },
+      {
+        "clip": "mc1595f7b3e60a",
+        "similarity": 0.5381,
+        "caption": "This song contains a digital drum with a shaker sound and a triangle. A soft sub bass is playing along. In the background you can hear one continuous high tone from a digital string sound. Other strings and a piano are playing a simple repeating melody. The female voice is singing along with backing vocals in the background. This song may be playing loud while driving a car.",
+        "caption_matches_query": false,
+        "tags": [
+          "r&b"
+        ]
+      },
+      {
+        "clip": "mcd3d4e333c78e",
+        "similarity": 0.5231,
+        "caption": "This music is an energetic drum solo. The tempo is fast with an enthusiastic, vigorous drumming riff. The drummer uses the snare and bass drum to create a thumping beat. It is youthful, rhythmic,vivacious, upbeat ,buoyant and infectious.",
+        "caption_matches_query": false,
+        "tags": [
+          "energetic",
+          "happy"
+        ]
+      }
+    ]
+  },
+  {
+    "query_caption": "A male vocalist sings this upbeat pop song. The tempo is medium fast with thumping drum beats, percussion instruments, ukulele melody, keyboard accompaniment and rhythmic guitar. The audio is muddled making it difficult to hear the finer elements of the song. The song is energetic, enthusiastic, happy, fresh, peppy, perky , groovy. There is background chatter, clapping, cheering and rustling. The song is a Pop Rock/Alternative Indie.",
+    "query_clip": "mc5d61ecc7a06b",
+    "retrieved": [
+      {
+        "clip": "mc7af13c1c03cd",
+        "similarity": 0.5666,
+        "caption": "This hip-hop song features a male voice rapping the main lyrics. This is accompanied by programmed percussion playing a simple beat. Hand claps are played on every alternate count. The synth plays a repetitive melody in loop. The bass plays the root notes of the chords in harmony with the synth. This is a moderate tempo song. This song can be played in a club.",
+        "caption_matches_query": false,
+        "tags": [
+          "dance",
+          "electronic",
+          "hip hop",
+          "rap"
+        ]
+      },
+      {
+        "clip": "mcf6ec939cb3f5",
+        "similarity": 0.5566,
+        "caption": "This is a pop punk music piece. The male vocals are singing melodically. Initially, there is a clean sounding electric guitar playing the main melody. Then, a rising pattern starts to play and the distorted electric guitar takes the place of the clean electric guitar. The bass guitar is playing in the background. The rhythm is provided by an upbeat acoustic drum beat. The atmosphere is hard-hitting. This piece can be used in the soundtrack of a teenage drama as the opening theme.",
+        "caption_matches_query": false,
+        "tags": [
+          "pop",
+          "rock"
+        ]
+      },
+      {
+        "clip": "mc582bce660772",
+        "similarity": 0.5546,
+        "caption": "Male singers sing this vocal harmony. The song is medium tempo with steady drumming rhythm, cello playing the bass line, guitars strumming rhythm and various percussion hits. The song is chaotic and exciting. The song is an amateur band playing a retro pop song with audio quality.",
+        "caption_matches_query": false,
+        "tags": [
+          "indie",
+          "pop",
+          "fun",
+          "happy",
+          "psychedelic"
+        ]
+      }
+    ]
+  },
+  {
+    "query_caption": "This is a Hindi film music piece. This is an instrumental piece. The harmonica is playing a cheerful melody in the lead. The glockenspiel is playing a secondary melody while the acoustic guitar and the bass guitar are supporting them in the background. The acoustic drums are playing a jazz swing beat with the brushes. The atmosphere is lively. This piece could be used in a feelgood movie during scenes where everything is going well for the main character.",
+    "query_clip": "mcfbf960970d9a",
+    "retrieved": [
+      {
+        "clip": "mce2ddf0171086",
+        "similarity": 0.4923,
+        "caption": "The low quality recording features a flat male vocal singing over crowd cheering sound, punchy kick, shimmering cymbals, groovy accordion melody, acoustic rhythm guitar chords and smooth bass guitar. There is a short toms roll before the bass drops. It sounds fun and happy.",
+        "caption_matches_query": false,
+        "tags": [
+          "groove",
+          "fun",
+          "happy"
+        ]
+      },
+      {
+        "clip": "mc17a165361d98",
+        "similarity": 0.4915,
+        "caption": "This is a country music piece. There is a female vocalist singing melodically as the lead at a medium-to-high range. A mandolin is playing the main theme while being backed by a bass guitar. The rhythmic background consists of a simple 4/4 acoustic drum beat.",
+        "caption_matches_query": false,
+        "tags": [
+          "country",
+          "emotional",
+          "inspiring"
+        ]
+      },
+      {
+        "clip": "mc0acace30045d",
+        "similarity": 0.4852,
+        "caption": "The Reggae song features a flat male vocal singing, alongside wide background harmonizing female vocals, over metallic snare, simple kick hits, offbeat acoustic rhythm guitar chords, groovy bass, electric guitar licks and tinny percussive elements widely spread in the stereo image. Sounds happy and uplifting, like something you can listen to while chilling at the beach.",
+        "caption_matches_query": false,
+        "tags": [
+          "groove",
+          "reggae",
+          "happy"
+        ]
+      }
+    ]
+  },
+  {
+    "query_caption": "The low quality video features a cover of a kids song and it consists of a sweet girl vocal singing over acoustic rhythm guitar. The recording is in mono, noisy and it sounds fun and happy.",
+    "query_clip": "mcd7c23f9b795d",
+    "retrieved": [
+      {
+        "clip": "mcd9cfa6591b9e",
+        "similarity": 0.6122,
+        "caption": "A female pop star sings this lilting melody. The song is medium tempo with a piano playing accompaniment with a subtle bass line. The song is emotional and inspiring. The song is a modern pop hit played to a live audience. The song audio quality is poor and deteriorated.",
+        "caption_matches_query": false,
+        "tags": [
+          "love",
+          "pop",
+          "emotional",
+          "inspiring"
+        ]
+      },
+      {
+        "clip": "mc77bbc349941a",
+        "similarity": 0.6075,
+        "caption": "A female vocalist sings this melodic song in Icelandic. The tempo is slow with vocal emphasis and a soft and romantic piano accompaniment. The song is a mellow, soothing, peaceful, soothing, ethereal, mesmerising and captivating Icelandic lullaby.",
+        "caption_matches_query": false,
+        "tags": [
+          "minimalist",
+          "calm",
+          "dreamy",
+          "emotional",
+          "romantic"
+        ]
+      },
+      {
+        "clip": "mc566502f37f66",
+        "similarity": 0.6051,
+        "caption": "Here we hear a calm acoustic rendition of a song. The ukulele is played in a simple, chord-based way, and the female singer has a gentle and soothing voice. She also performs in a way that radiates tranquility.",
+        "caption_matches_query": false,
+        "tags": [
+          "pop",
+          "calm"
+        ]
+      }
+    ]
+  },
+  {
+    "query_caption": "The low quality recording features plastic percussion hits. The recording is noisy and in mono, as it was probably recorded with a phone.",
+    "query_clip": "mc15fed7e7df78",
+    "retrieved": [
+      {
+        "clip": "mc284b3261bc00",
+        "similarity": 0.6168,
+        "caption": "This audio contains someone playing a tibetan bowl ringing in a high pitch. This may be playing during meditation.",
+        "caption_matches_query": false,
+        "tags": [
+          "calm",
+          "meditative"
+        ]
+      },
+      {
+        "clip": "mc38ab235fd2ad",
+        "similarity": 0.6122,
+        "caption": "A percussionist plays various drum rhythms at a medium tempo. The tempo is me doom with no harmony instruments. The song is exciting and energetic. The audio quality is poor and sounds like a music tutorial  for drummers.",
+        "caption_matches_query": false,
+        "tags": [
+          "groove",
+          "energetic",
+          "exciting"
+        ]
+      },
+      {
+        "clip": "mc15fed7e7df78",
+        "similarity": 0.6035,
+        "caption": "The low quality recording features plastic percussion hits. The recording is noisy and in mono, as it was probably recorded with a phone.",
+        "caption_matches_query": true,
+        "tags": []
+      }
+    ]
+  },
+  {
+    "query_caption": "This is a gear showcase jam. The only instrument that is being played is a clean sounding electric guitar playing a mellow solo. A delay effect pedal is applied on the guitar. The atmosphere is calm and dreamy. This piece could be used in an advertisement jingle. It could also be playing in the background at a rock bar.",
+    "query_clip": "mc845e8e8891ee",
+    "retrieved": [
+      {
+        "clip": "mc4ede7067001b",
+        "similarity": 0.5699,
+        "caption": "The song contains synth pad sounds in the low to mid range playing drone sounds with little atmospheric sounds. In the background you can hear sounds of something falling to the ground. This song may be playing for meditation.",
+        "caption_matches_query": false,
+        "tags": [
+          "ambient",
+          "cinematic",
+          "meditative"
+        ]
+      },
+      {
+        "clip": "mc1f6c47cbb9d2",
+        "similarity": 0.5326,
+        "caption": "This is an instructive track to tune a guitar at double drop D tuning. A repeated single note for each string is being played. This track could be used for unnatural sounding guitar samples.",
+        "caption_matches_query": false,
+        "tags": []
+      },
+      {
+        "clip": "mcda63649a3c49",
+        "similarity": 0.5201,
+        "caption": "This composition sounds calming as it is playing a melody with bell sounds then a wind sounds comes and the song changes to orchestral instruments playing strings and flutes.  This song may be playing in an indie video game moving a cute figure through a dangerous but beautiful landscape.",
+        "caption_matches_query": false,
+        "tags": [
+          "orchestral",
+          "calm"
+        ]
+      }
+    ]
+  },
+  {
+    "query_caption": "A man narrates a repair technique for a French horn. The song plays at medium tempo, with a brass section playing in an orchestra. The song is medium tempo and plays a soundtrack for the repair video.",
+    "query_clip": "mca81be83101dc",
+    "retrieved": [
+      {
+        "clip": "mca555089b5ee7",
+        "similarity": 0.5407,
+        "caption": "This is the recording of a cowbell. The cowbell is being played with the side and the tip of the drumstick repeatedly. This recording could be sampled for use in beat-making especially for genres that have a heavy usage of cowbells such as latin dance music.",
+        "caption_matches_query": false,
+        "tags": []
+      },
+      {
+        "clip": "mc51e9386da7b2",
+        "similarity": 0.5307,
+        "caption": "This is a clip of a tutorial where we have a male teacher playing a minor scale on a nylon string guitar. The energy of the video is calm.",
+        "caption_matches_query": false,
+        "tags": []
+      },
+      {
+        "clip": "mcd7c23f9b795d",
+        "similarity": 0.5219,
+        "caption": "The low quality video features a cover of a kids song and it consists of a sweet girl vocal singing over acoustic rhythm guitar. The recording is in mono, noisy and it sounds fun and happy.",
+        "caption_matches_query": false,
+        "tags": [
+          "children's music",
+          "fun",
+          "happy"
+        ]
+      }
+    ]
+  },
+  {
+    "query_caption": "The Jazz song features a wide brass section playing over soft kick and rimshot hits, smooth bass guitar, mellow keys chords and soft electric guitar arpeggiated melody. It sounds relaxing, warm and calming - like something you would hear in waiting rooms.",
+    "query_clip": "mc8921df468ac9",
+    "retrieved": [
+      {
+        "clip": "mc3fc6a8d978f9",
+        "similarity": 0.5531,
+        "caption": "This piano song features a piano playing the backing chords. A violin plays the main melody. The melody is romantic but turns eerie at the end. There are no other instruments in this song. A male voice narrates two words toward the end of the song. This song can be played in a promotional video.",
+        "caption_matches_query": false,
+        "tags": [
+          "romantic"
+        ]
+      },
+      {
+        "clip": "mc6b2852e42484",
+        "similarity": 0.5404,
+        "caption": "This is a live performance of a theremin piece. The theremin is playing eerie high-pitched sounds in the lead while the bass guitar and the percussion is playing in the background. The atmosphere is creepy and unsettling. This piece could be used in the soundtrack of a horror movie or a horror video game.",
+        "caption_matches_query": false,
+        "tags": [
+          "creepy"
+        ]
+      },
+      {
+        "clip": "mc1752823b1768",
+        "similarity": 0.5298,
+        "caption": "The song is an instrumental music section. The song is medium tempo with a string section playing percussively with violins and cellos in harmony, flute playing a melancholic solo, percussive hits and steady bass line. The song is full of suspense and passion. The song is a Tamil movie instrumental soundtrack.",
+        "caption_matches_query": false,
+        "tags": [
+          "cinematic",
+          "orchestral",
+          "emotional",
+          "ominous",
+          "suspenseful"
+        ]
+      }
+    ]
+  },
+  {
+    "query_caption": "This music is an Electronica instrumental. The tempo is fast with synthesiser articulations, hard hitting digital drum beats and electronic arrangements with a repetitive female vocal riff. The music is punchy, vibrant, thumping, pulsating, youthful, enthusiastic, energetic ,psychedelic, hypnotic, trance like and buoyant. This music is EDM/Synth Pop.",
+    "query_clip": "mc7a985c116adb",
+    "retrieved": [
+      {
+        "clip": "mc96c27fe0c8bb",
+        "similarity": 0.5466,
+        "caption": "The low quality recording features a live performance that contains harmonizing male vocals singing over repetitive synth keys and electric guitar melody, followed by groovy bass, shimmering hats and punchy \"4 on the floor\" kick pattern. The recording is noisy, distorted and crushed, but it sounds energetic and exciting.",
+        "caption_matches_query": false,
+        "tags": [
+          "electronic",
+          "groove",
+          "techno",
+          "energetic",
+          "exciting"
+        ]
+      },
+      {
+        "clip": "mcee09fa415ad0",
+        "similarity": 0.5395,
+        "caption": "This is a hip-hop music piece. There is a crisp synth sound playing the melody. The piece has a strong bass sound. There is a melodic pad with beat repeat effect that uses a piano sample. The rhythmic background is provided by a loud electronic drum beat. The piece is energetic and modern sounding. It could be used in the soundtrack of a sci-fi movie where there is a lot of action going on.",
+        "caption_matches_query": false,
+        "tags": [
+          "electronic",
+          "hip hop",
+          "energetic"
+        ]
+      },
+      {
+        "clip": "mc582bce660772",
+        "similarity": 0.5227,
+        "caption": "Male singers sing this vocal harmony. The song is medium tempo with steady drumming rhythm, cello playing the bass line, guitars strumming rhythm and various percussion hits. The song is chaotic and exciting. The song is an amateur band playing a retro pop song with audio quality.",
+        "caption_matches_query": false,
+        "tags": [
+          "indie",
+          "pop",
+          "fun",
+          "happy",
+          "psychedelic"
+        ]
+      }
+    ]
+  }
+]

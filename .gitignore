@@ -1,0 +1,19 @@
+# Data and model artifacts are large; the repository ships code and results only.
+data/raw/**
+!data/raw/.gitkeep
+data/processed/**
+!data/processed/.gitkeep
+# graph samples ARE a required deliverable -- keep them
+!data/processed/*/graph_samples/
+!data/processed/*/graph_samples/*.pt
+
+*.pt
+!data/processed/*/graph_samples/*.pt
+*.parquet
+*.zip
+
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.DS_Store
+.venv/

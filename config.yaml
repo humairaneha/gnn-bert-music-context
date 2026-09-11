@@ -1,0 +1,89 @@
+# config.yaml -- a RECORD of the settings used, not a source of truth.
+#
+# Every script is driven by a CONFIGURATION block of named constants at the top
+# of the file, and takes no command-line arguments. That was a deliberate
+# choice: a single file you can read top-to-bottom is easier to audit than a
+# config layered over defaults, and it means a script cannot silently run with
+# settings that differ from what its own header says.
+#
+# This file therefore documents the values used to produce results/metrics.json
+# so the repository layout is complete and the settings are greppable in one
+# place. Editing it does NOT change behaviour -- edit the script.
+
+seed: 42
+
+audio:
+  sample_rate: 22050          # all three corpora, resampled on load
+  peak_normalize: true
+  n_chroma: 12                # -> chroma_pooled 24-d (mean + std)
+  n_mfcc: 13                  # -> mfcc_pooled   26-d (mean + std)
+  n_fft: 2048
+  hop_length: 512
+  std_ddof: 1                 # matches torch.std, so features stay comparable
+
+datasets:
+  gtzan:
+    task: 2
+    clips: 999
+    segment_seconds: 5        # 30 s track  -> 6 segments, 216 frames each
+    labels: {n: 10, type: single-label}
+    split: {unit: track, train: 0.70, val: 0.15, test: 0.15}
+  magnatagatune:
+    task: 3
+    clips: 17414
+    segment_seconds: 5        # 29.1 s clip -> 5 segments, 216 frames each
+    labels: {n_genre: 36, n_mood: 17, type: multi-label}
+    min_positives: 80         # target tags only; instrument tags unfiltered
+    split: {unit: song, train: 0.70, val: 0.15, test: 0.15,
+            method: iterative-multilabel-stratified}
+  musiccaps:
+    task: 4
+    clips: 5299
+    segment_seconds: 2        # 10 s clip   -> 5 segments, 87 frames each
+    min_positives: 55
+    split: {unit: clip, train: 0.70, val: 0.15, test: 0.15,
+            method: iterative-multilabel-stratified}
+
+graph:
+  edge_policy: tau            # tau | percentile | topk
+  edge_tau: 0.3
+  edge_percentile: 85
+  edge_topk: 2
+  require_positive: true
+  similarity: track-centered-cosine
+  edge_attr: [is_temporal, similarity_score]
+
+model:
+  backbone: graphsage         # graphsage | gat
+  hidden: 128
+  num_layers: 3
+  dropout: 0.3
+  readout: global_mean_pool
+
+fusion:
+  d_model: 128
+  bert: bert-base-uncased
+  freeze_bert: true           # see report, Limitations
+  max_len: {mtat: 32, musiccaps: 256}
+  modes: [bert, concat, crossattn, mlp_bert, tags_linear]
+
+contrastive:
+  d_embed: 256
+  temperature: 0.07           # learnable, optimised in log space
+  batch_size: 128             # in-batch negatives are the whole signal
+  mask_duplicate_captions: true
+  group_aware_retrieval: true
+  recall_k: [1, 5, 10]
+
+training:
+  loss: BCEWithLogitsLoss
+  pos_weight: inverse-frequency
+  pos_weight_max: 10          # the cap matters more than threshold tuning
+  optimizer: AdamW
+  lr: 0.001
+  weight_decay: 0.00001
+  batch_size: 32
+  max_epochs: 100
+  patience: 15
+  model_selection: validation-AUC-PR
+  thresholds: per-tag, tuned on validation only, applied frozen to test

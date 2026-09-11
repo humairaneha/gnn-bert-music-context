@@ -1,0 +1,219 @@
+[
+  {
+    "track_id": 29,
+    "artist": "American Bach Soloists",
+    "text": "A music clip featuring violin.",
+    "num_segments": 5,
+    "temporal_edges": [
+      {
+        "from": 0,
+        "to": 1
+      },
+      {
+        "from": 1,
+        "to": 2
+      },
+      {
+        "from": 2,
+        "to": 3
+      },
+      {
+        "from": 3,
+        "to": 4
+      }
+    ],
+    "similarity_edges": [
+      {
+        "from": 2,
+        "to": 4,
+        "similarity": 0.662
+      }
+    ],
+    "top_attended_tokens": [
+      {
+        "token": "violin",
+        "weight": 0.9962
+      },
+      {
+        "token": "featuring",
+        "weight": 0.0024
+      },
+      {
+        "token": "clip",
+        "weight": 0.001
+      },
+      {
+        "token": "a",
+        "weight": 0.0002
+      },
+      {
+        "token": "music",
+        "weight": 0.0001
+      },
+      {
+        "token": "[CLS]",
+        "weight": 0.0001
+      },
+      {
+        "token": ".",
+        "weight": 0.0
+      },
+      {
+        "token": "[SEP]",
+        "weight": 0.0
+      }
+    ],
+    "true_tags": [
+      "classical"
+    ],
+    "predicted_tags": [
+      "classical"
+    ],
+    "correct": [
+      "classical"
+    ],
+    "missed": [],
+    "false_positive": []
+  },
+  {
+    "track_id": 33,
+    "artist": "Steven Devine",
+    "text": "A music clip featuring harpsichord and harpsicord.",
+    "num_segments": 5,
+    "temporal_edges": [
+      {
+        "from": 0,
+        "to": 1
+      },
+      {
+        "from": 1,
+        "to": 2
+      },
+      {
+        "from": 2,
+        "to": 3
+      },
+      {
+        "from": 3,
+        "to": 4
+      }
+    ],
+    "similarity_edges": [
+      {
+        "from": 2,
+        "to": 4,
+        "similarity": 0.529
+      }
+    ],
+    "top_attended_tokens": [
+      {
+        "token": "harpsichord",
+        "weight": 0.9998
+      },
+      {
+        "token": "harp",
+        "weight": 0.0002
+      },
+      {
+        "token": "##ord",
+        "weight": 0.0
+      },
+      {
+        "token": "##sic",
+        "weight": 0.0
+      },
+      {
+        "token": "and",
+        "weight": 0.0
+      },
+      {
+        "token": "featuring",
+        "weight": 0.0
+      },
+      {
+        "token": "[CLS]",
+        "weight": 0.0
+      },
+      {
+        "token": "clip",
+        "weight": 0.0
+      }
+    ],
+    "true_tags": [
+      "classical",
+      "loud",
+      "fast"
+    ],
+    "predicted_tags": [
+      "classical"
+    ],
+    "correct": [
+      "classical"
+    ],
+    "missed": [
+      "fast",
+      "loud"
+    ],
+    "false_positive": []
+  },
+  {
+    "track_id": 133,
+    "artist": "Williamson",
+    "text": "A music clip.",
+    "num_segments": 5,
+    "temporal_edges": [
+      {
+        "from": 0,
+        "to": 1
+      },
+      {
+        "from": 1,
+        "to": 2
+      },
+      {
+        "from": 2,
+        "to": 3
+      },
+      {
+        "from": 3,
+        "to": 4
+      }
+    ],
+    "similarity_edges": [],
+    "top_attended_tokens": [
+      {
+        "token": "clip",
+        "weight": 0.4168
+      },
+      {
+        "token": ".",
+        "weight": 0.2199
+      },
+      {
+        "token": "a",
+        "weight": 0.1572
+      },
+      {
+        "token": "[CLS]",
+        "weight": 0.1027
+      },
+      {
+        "token": "music",
+        "weight": 0.1013
+      },
+      {
+        "token": "[SEP]",
+        "weight": 0.0022
+      }
+    ],
+    "true_tags": [
+      "new age"
+    ],
+    "predicted_tags": [],
+    "correct": [],
+    "missed": [
+      "new age"
+    ],
+    "false_positive": []
+  }
+]

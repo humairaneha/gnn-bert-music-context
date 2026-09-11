@@ -1,0 +1,18 @@
+[
+  {
+    "model": "CNN mel-spectrogram",
+    "representation": "log-mel spectrogram",
+    "evaluation_level": "segment-level",
+    "split": "validation",
+    "macro_f1": 0.747,
+    "micro_f1": 0.7508
+  },
+  {
+    "model": "MFCC GraphSAGE (tau)",
+    "representation": "MFCC graph",
+    "evaluation_level": "track/graph-level",
+    "split": "validation",
+    "macro_f1": 0.7023498214226269,
+    "micro_f1": 0.72
+  }
+]

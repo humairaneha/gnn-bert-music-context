@@ -1,0 +1,61 @@
+{
+  "run": "mfcc_sage_tau",
+  "feature": "mfcc",
+  "backbone": "sage",
+  "edge_policy": "tau",
+  "device": "mps",
+  "num_classes": 10,
+  "input_dim": 26,
+  "hidden_dim": 64,
+  "num_layers": 3,
+  "train": {
+    "accuracy": 0.7839771101573677,
+    "macro_f1": 0.7709938337874048,
+    "micro_f1": 0.7839771101573677,
+    "auc_pr": 0.8866120711555256
+  },
+  "val": {
+    "accuracy": 0.72,
+    "macro_f1": 0.7023498214226269,
+    "micro_f1": 0.72,
+    "auc_pr": 0.7700691829610535
+  },
+  "test": {
+    "accuracy": 0.6333333333333333,
+    "macro_f1": 0.6023857157040269,
+    "micro_f1": 0.6333333333333333,
+    "auc_pr": 0.7164444204351883
+  },
+  "baseline_majority": {
+    "accuracy": 0.1,
+    "macro_f1": 0.01818181818181818,
+    "micro_f1": 0.1,
+    "auc_pr": 0.1,
+    "majority_class": 0
+  },
+  "cnn_reference": {
+    "source": "cnn_eval.ipynb",
+    "evaluation_level": "segment-level",
+    "split": "validation",
+    "macro_f1": 0.747,
+    "micro_f1": 0.7508
+  },
+  "cnn_gnn_validation_comparison": [
+    {
+      "model": "CNN mel-spectrogram",
+      "representation": "log-mel spectrogram",
+      "evaluation_level": "segment-level",
+      "split": "validation",
+      "macro_f1": 0.747,
+      "micro_f1": 0.7508
+    },
+    {
+      "model": "MFCC GraphSAGE (tau)",
+      "representation": "MFCC graph",
+      "evaluation_level": "track/graph-level",
+      "split": "validation",
+      "macro_f1": 0.7023498214226269,
+      "micro_f1": 0.72
+    }
+  ]
+}

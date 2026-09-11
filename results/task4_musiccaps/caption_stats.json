@@ -1,0 +1,26 @@
+{
+  "train": {
+    "clips": 3709,
+    "unique_captions": 3709,
+    "unique_fraction": 1.0,
+    "largest_group": 1,
+    "clips_sharing_a_caption": 0,
+    "shared_fraction": 0.0
+  },
+  "val": {
+    "clips": 794,
+    "unique_captions": 794,
+    "unique_fraction": 1.0,
+    "largest_group": 1,
+    "clips_sharing_a_caption": 0,
+    "shared_fraction": 0.0
+  },
+  "test": {
+    "clips": 796,
+    "unique_captions": 796,
+    "unique_fraction": 1.0,
+    "largest_group": 1,
+    "clips_sharing_a_caption": 0,
+    "shared_fraction": 0.0
+  }
+}
