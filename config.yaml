@@ -1,14 +1,6 @@
-# config.yaml -- a RECORD of the settings used, not a source of truth.
-#
-# Every script is driven by a CONFIGURATION block of named constants at the top
-# of the file, and takes no command-line arguments. That was a deliberate
-# choice: a single file you can read top-to-bottom is easier to audit than a
-# config layered over defaults, and it means a script cannot silently run with
-# settings that differ from what its own header says.
-#
-# This file therefore documents the values used to produce results/metrics.json
-# so the repository layout is complete and the settings are greppable in one
-# place. Editing it does NOT change behaviour -- edit the script.
+# Experiment settings record. Scripts read their own configuration constants.
+# Editing this file does not change execution. Check per-run metadata for the
+# values associated with saved results.
 
 seed: 42
 

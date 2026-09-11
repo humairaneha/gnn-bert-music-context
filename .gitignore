@@ -3,7 +3,7 @@ data/raw/**
 !data/raw/.gitkeep
 data/processed/**
 !data/processed/.gitkeep
-# graph samples ARE a required deliverable -- keep them
+# Retain small graph samples for inspection and submission.
 !data/processed/*/graph_samples/
 !data/processed/*/graph_samples/*.pt
 

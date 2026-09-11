@@ -1,48 +1,33 @@
-# Where each file goes
+# Source modules
 
-The eight files with generic names are the interface the project specification
-asks for. They are thin: dispatchers that launch a script, or re-exports that
-expose a class. Every implementation lives in exactly one place, because two
-copies of a model or a metric drift apart and then the ablation rows stop being
-comparable.
+Run commands from the repository root. Dispatchers select the dataset-specific
+implementation; model interface modules expose reusable classes and functions.
 
-## Drop your task scripts into this directory
-
-| Your file | Reached through | Task |
+| Implementation | Entry point | Purpose |
 |---|---|---|
-| `GTZAN_features.py`  | `audio_features.py --dataset gtzan`      | 2 |
-| `GTZAN_graphs.py`    | `graph_builder.py --dataset gtzan`       | 2 |
-| `GTZAN_gnn.py`       | `train.py --task 2`, `gnn_model.py`      | 2 |
-| `MTAT_features.py`   | `audio_features.py --dataset mtat`       | 3 |
-| `MTAT_graphs.py`     | `graph_builder.py --dataset mtat`        | 3 |
-| `gnn.py`             | `train.py --task 3`, `gnn_model.py`      | 3 |
-| `task3_mlp_nograph.py` | `train.py --task 3 --variant mlp`      | 3 |
-| `task3_fusion.py`    | `train.py --task 3 --variant fusion`, `fusion_model.py`, `bert_encoder.py` | 3 |
-| `musiccaps_features.py` | `audio_features.py --dataset musiccaps` | 4 |
-| `graphs.py`          | `graph_builder.py --dataset musiccaps`   | 4 |
-| `task4_contrastive.py` | `contrastive.py`                       | 4 |
-| `run_musiccaps_supervised.py` | `train.py --task 4 --variant supervised` | 4 |
-| `run_musiccaps_task4.py` | `train.py --task 4`, `contrastive.py`  | 4 |
+| `bert_musiccaps_task1.py` | `train.py --task 1` | MusicCaps caption tagging |
+| `GTZAN_features.py` | `audio_features.py --dataset gtzan` | Validate prepared splits and write label metadata |
+| `GTZAN_graphs.py` | `graph_builder.py --dataset gtzan` | Build GTZAN graphs |
+| `GTZAN_gnn.py` | `train.py --task 2` | Train GTZAN genre classifier |
+| `MTAT_features.py` | `audio_features.py --dataset mtat` | Prepare MagnaTagATune features and splits |
+| `MTAT_graphs.py` | `graph_builder.py --dataset mtat` | Build MagnaTagATune graphs |
+| `gnn.py` | `train.py --task 3` | Train audio-only tag classifier |
+| `task3_mlp_nograph.py` | `train.py --task 3 --variant mlp` | Train no-graph audio control |
+| `task3_fusion.py` | `train.py --task 3 --variant fusion` | Train fusion and text controls |
+| `musiccaps_features.py` | `audio_features.py --dataset musiccaps` | Prepare paired MusicCaps features and text |
+| `run_musiccaps_supervised.py` | `train.py --task 4 --variant supervised` | Train supervised MusicCaps audio reference |
+| `run_musiccaps_task4.py` | `train.py --task 4` | Configure MusicCaps contrastive training |
+| `task4_contrastive.py` | Imported by `run_musiccaps_task4.py` | Dual encoder, retrieval, and zero-shot scoring |
+| `evaluate.py` | `python src/evaluate.py` | Aggregate saved metrics |
 
-Task 1 (BERT on MusicCaps captions) is standalone and has no graph stage.
+`bert_encoder.py`, `gnn_model.py`, `fusion_model.py`, and `contrastive.py`
+provide importable interfaces. Configuration constants live in the implementation
+modules; `config.yaml` does not control execution.
 
-## Two things to check before committing
+The MusicCaps graph dispatcher currently targets `graphs.py`, which is absent
+from this checkout. Existing MusicCaps graph caches can still be used by
+training scripts. Graph rebuilding through that dispatcher requires its target
+implementation.
 
-**Filenames are matched exactly, including case.** macOS is case-insensitive by
-default, so `mtat_features.py` vs `MTAT_features.py` works locally and fails the
-moment someone clones the repository on Linux. If a dispatcher cannot find its
-target it prints the files it can actually see.
-
-**`GTZAN_features.py` may not exist yet** under that name. Either rename your
-GTZAN preprocessing script to match, or edit the one line in `TARGETS` at the
-top of `audio_features.py`.
-
-## Verify
-
-```bash
-cd src
-python -c "import gnn_model, fusion_model, bert_encoder, contrastive; print('ok')"
-python audio_features.py --help
-python graph_builder.py --help
-python train.py --help
-```
+Names and paths are case-sensitive on Linux. GTZAN uses
+`data/processed/GTZAN/`; the other dataset directories are lowercase.

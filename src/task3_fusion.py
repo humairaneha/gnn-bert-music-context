@@ -377,7 +377,7 @@ def train_one(mode, graphs, H, mask, instrument, labels, n_genre, groups,
 def case_studies(model, graphs, H, mask, tokens, instrument, labels, thresholds,
                  n_case=N_CASE_STUDIES, out_dir=RESULT_DIR):
     """
-    The brief's "3 case studies showing graph paths + caption alignment".
+    Export graph structure, token attention, and predictions for test examples.
 
     For each clip: the graph's edges (temporal chain plus similarity edges with
     their scores), the caption, which caption tokens the graph readout attended

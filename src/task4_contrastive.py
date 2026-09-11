@@ -91,9 +91,8 @@ def info_nce(g, t, log_temp, caption_ids=None):
     """
     Symmetric InfoNCE over in-batch negatives.
 
-    The brief writes one direction; both are computed and averaged because
-    retrieval is evaluated in both directions and a one-sided loss produces an
-    asymmetric space.
+    Average the graph-to-text and text-to-graph losses to train both
+    retrieval directions.
 
     caption_ids lets same-caption pairs be masked out of the negatives. Without
     it, two clips with identical text are trained to repel each other -- the
@@ -174,9 +173,7 @@ def retrieval_metrics(query, gallery, texts, ks=RECALL_K,
         else:
             hit = (topk == np.arange(len(query))[:, None]).any(axis=1)
         out[f"R@{k}"] = round(float(hit.mean()), 4)
-    # Analytic floor at every k, not just k=1: the brief's comparison table puts
-    # a random baseline against the contrastive model at R@5, so R@1 alone is
-    # not enough to fill it in.
+    # Analytical random recall for one relevant item in the gallery.
     for k in ks:
         out[f"random_R@{k}"] = round(min(1.0, k / len(gallery)), 6)
         out[f"lift_R@{k}"] = (round(out[f"R@{k}"] / out[f"random_R@{k}"], 1)
@@ -299,7 +296,7 @@ def main():
     if stats["test"]["unique_fraction"] < 0.2:
         print("\n  WARNING: fewer than 20% of test captions are unique. Retrieval "
               "numbers below\n  are group-aware and still weak evidence -- say so "
-              "in the report. The zero-shot\n  tag deliverable is unaffected.\n")
+              "in the report. The zero-shot\n  tag evaluation is separate.\n")
 
     H, mask, tokens = build_text_cache(list(graphs.values()))
     tag_texts = [TAG_PROMPT.format(t) for t in labels]

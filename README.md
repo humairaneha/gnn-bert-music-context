@@ -63,7 +63,7 @@ src/
   GTZAN_features.py  GTZAN_graphs.py  GTZAN_gnn.py      Task 2
   MTAT_features.py   MTAT_graphs.py   gnn.py            Task 3
   task3_mlp_nograph.py  task3_fusion.py                 Task 3 controls/fusion
-  musiccaps_features.py  graphs.py                     MusicCaps preprocessing
+  musiccaps_features.py                               MusicCaps preprocessing
   run_musiccaps_supervised.py                         MusicCaps reference
   run_musiccaps_task4.py  task4_contrastive.py          Task 4
 
@@ -111,7 +111,7 @@ python src/train.py --task 3 --variant fusion
 
 # Task 4 — MusicCaps
 python src/audio_features.py --dataset musiccaps
-python src/graph_builder.py --dataset musiccaps
+# MusicCaps training requires existing graph caches; src/graphs.py is absent.
 python src/train.py --task 4 --variant supervised
 python src/train.py --task 4
 
@@ -125,9 +125,9 @@ not extract features from raw audio. The GTZAN commands above therefore do not
 constitute a complete raw-data reproduction pipeline. GTZAN results are written
 to `results/task2/mfcc_sage_tau/` for the current configuration.
 
-[REPRODUCE.md](REPRODUCE.md) contains additional environment and dataset notes,
-but some expected scores, GTZAN paths, and preprocessing descriptions there
-refer to earlier runs. The per-run metrics are the source for the results above.
+[REPRODUCE.md](REPRODUCE.md) describes environment setup, artifact dependencies,
+and the available reproduction paths. Per-run metrics are the source for the
+results above.
 
 ## Configuration
 

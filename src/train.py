@@ -41,7 +41,7 @@ def main():
                          f"{a.variant!r}. Available: {sorted(TARGETS)}")
     script = HERE / TARGETS[key]
     if not script.exists():
-        raise SystemExit(f"{script.name} not found in {HERE}. Rename your script "
+        raise SystemExit(f"{script.name} not found in {HERE}. Check the target filename "
                          f"or edit TARGETS at the top of {Path(__file__).name}.")
     print(f"[train] task {a.task} ({a.variant}) -> {script.name}\n")
     runpy.run_path(str(script), run_name="__main__")

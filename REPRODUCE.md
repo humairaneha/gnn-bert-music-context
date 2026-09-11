@@ -1,183 +1,148 @@
-# Reproducing the results
+# Running and reproducing experiments
 
-Everything below was run on an Apple M-series laptop (macOS, MPS backend,
-Python 3.10). Nothing requires a GPU cluster, but Task 4 downloads 9.8 GB and
-the full pipeline writes roughly 15 GB of intermediate data.
+Run commands from the repository root. Saved per-run metrics describe the
+reported experiments; current script constants may differ from those runs.
+The result table in `README.md` identifies the retained scores.
 
-**Every stage is resumable.** If a stage's `.parquet` or cached `.pt` file
-already exists it is reused and the stage is skipped. To force a rebuild, delete
-the file. This matters: feature extraction on MagnaTagATune takes over an hour,
-and a crash three stages later should not cost that.
-
----
-
-## 0. Environment
+## Environment
 
 ```bash
-git clone <repo-url> && cd gnn-bert-music-context
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-`torch-geometric` sometimes needs its companion wheels installed separately; if
-`import torch_geometric` fails, follow the install instructions for your torch
-version at <https://pytorch-geometric.readthedocs.io>.
+The saved runs used macOS with an Apple M-series GPU and the MPS backend.
+Training results may vary across devices and library versions. This checkout
+does not establish a repeated-seed confidence interval.
 
-No script takes command-line arguments beyond the dispatchers. Each has a
-`CONFIGURATION` block of named constants at the top of the file. `config.yaml`
-records the values used for the reported results but does not drive behaviour.
+## Required artifacts
 
----
+| Operation | Inputs |
+|---|---|
+| Task 1 training | MusicCaps caption/tag dataset and pretrained BERT downloads |
+| Graph construction | Dataset `train.parquet`, `val.parquet`, `test.parquet`, and label metadata |
+| Graph-based training | Cached train/validation/test `.pt` graphs and label metadata |
+| Demo inference | Test graph cache, `label_space.json`, model checkpoint, and thresholds |
+| Metric aggregation | Saved per-run metric JSON files |
 
-## 1. Task 1 — BERT tag classification (MusicCaps captions)
+Raw audio, processed data, and checkpoints are generally excluded from Git.
+A source-only clone therefore does not contain every artifact needed by the
+demo or cached-graph training. Individual graph samples are not a substitute
+for the full split caches.
 
-No audio required. Both datasets download from the Hugging Face Hub.
+## Task 1 — MusicCaps caption tagging
 
 ```bash
 python src/train.py --task 1
 ```
 
-| | |
-|---|---|
-| Downloads | `humairaneha/MusicCaps-Curated-Tags` (~5 MB) |
-| Runtime | ~20 min, 26 epochs |
-| Writes | `results/task1_bert/` |
+The implementation is `src/bert_musiccaps_task1.py`. It fine-tunes BERT and
+writes outputs under `results/task1_bert/`, including `metrics.json`, label
+vocabulary, thresholds, split IDs, curves, and model files.
 
-Expected: **Macro-F1 0.6016, Micro-F1 0.6394, AUC-PR 0.6462** over 65 tags on
-504 test clips.
+## Task 2 — GTZAN genre classification
 
----
-
-## 2. Task 2 — GNN on music structure graphs (GTZAN)
+The current feature utility requires prepared parquet splits under
+`data/processed/GTZAN/`. It validates labels and split IDs; it does not extract
+raw-audio features. A complete raw-to-parquet GTZAN pipeline is not provided by
+this entry point.
 
 ```bash
-python src/audio_features.py --dataset gtzan     # ~15 min
-python src/graph_builder.py  --dataset gtzan     # ~1 min
-python src/train.py --task 2                     # ~30 min for all configs
+python src/audio_features.py --dataset gtzan
+python src/graph_builder.py --dataset gtzan
+python src/train.py --task 2
 ```
 
-| | |
-|---|---|
-| Downloads | `sanchit-gandhi/gtzan` (~1.2 GB) |
-| Writes | `data/processed/gtzan/`, `results/task2_gnn/` |
-| Disk | ~3 GB |
+Graphs are written under `data/processed/GTZAN/graphs/`; the default saved run
+is under `results/task2/mfcc_sage_tau/`. Configuration constants in
+`GTZAN_graphs.py` and `GTZAN_gnn.py` must use the same edge policy.
 
-Expected validation Macro-F1: chroma-only **0.4682**, MFCC-only **0.7363**,
-concat **0.6641**, two-branch **0.6880**.
+The CNN comparison contains a stored segment-level validation reference.
+The referenced `cnn_eval.ipynb` is absent. GNN metrics are evaluated per track,
+so the stored comparison does not use a common evaluation unit.
 
-To cut runtime, reduce `CONFIGS_TO_RUN` in `GTZAN_gnn.py` to
-`["mfcc_sage"]` and set `RUN_CNN = False`.
-
----
-
-## 3. Task 3 — Multi-label tagging and fusion (MagnaTagATune)
+## Task 3 — MagnaTagATune tagging and fusion
 
 ```bash
-# check the tag partition before committing an hour to extraction
-python -c "from MTAT_features import inspect_tags; inspect_tags()"
-
-python src/audio_features.py --dataset mtat      # ~60-90 min
-python src/graph_builder.py  --dataset mtat      # ~5 min
-python src/train.py --task 3                     # ~20 min  GNN
-python src/train.py --task 3 --variant mlp       # ~20 min  no-graph control
-python src/train.py --task 3 --variant fusion    # ~60 min  five BERT ablations
+python src/audio_features.py --dataset mtat
+python src/graph_builder.py --dataset mtat
+python src/train.py --task 3
+python src/train.py --task 3 --variant mlp
+python src/train.py --task 3 --variant fusion
 ```
 
-| | |
-|---|---|
-| Downloads | `confit/magnatagatune` — `mp3.zip` 2.97 GB plus two CSVs |
-| Writes | `data/processed/mtat/`, `results/task3_*/` |
-| Disk | ~6 GB (3 GB audio, 1.9 GB frame features) |
+Preprocessing reads the `confit/magnatagatune` audio and annotations. The
+instrument-tag descriptions are inputs; genre and mood tags are targets.
+Outputs are stored under `data/processed/mtat/` and `results/task3_*/`.
 
-Set `NUM_PROC = 4` in `MTAT_features.py` to parallelise extraction. If workers
-hang, drop back to 1 — librosa with audioread under `fork` is unreliable on
-macOS.
-
-Expected test AUC-PR: GNN $\tau$=0.3 **0.2367**, GNN top-$k$=2 **0.2387**,
-MLP no-graph **0.2464**.
-
-### The edge-policy ablation
-
-The default is `EDGE_POLICY = "tau"`. For the second arm, set
-`EDGE_POLICY = "topk"` in `MTAT_graphs.py`, rerun `graph_builder.py`, then set
-the same value in `gnn.py` and rerun. Graphs are cached per policy
-(`train_mfcc_tau.pt`, `train_mfcc_topk.pt`), so the two builds coexist.
-
----
-
-## 4. Task 4 — Cross-modal alignment (MusicCaps)
+To inspect the tag partition without extracting audio, run from the repository
+root:
 
 ```bash
-# confirm the audio mirror's columns before downloading 9.8 GB
-python -c "from musiccaps_features import inspect_source; inspect_source()"
-
-python src/audio_features.py --dataset musiccaps          # ~40 min
-python src/graph_builder.py  --dataset musiccaps          # ~2 min
-python src/train.py --task 4 --variant supervised         # ~10 min
-python src/train.py --task 4                              # ~25 min
+PYTHONPATH=src python -c "from MTAT_features import inspect_tags; inspect_tags()"
 ```
 
-| | |
-|---|---|
-| Downloads | `CLAPv2/MusicCaps` (9.83 GB) — a community mirror of the audio |
-| Writes | `data/processed/musiccaps/`, `results/task4_musiccaps/`, `results/musiccaps_supervised/` |
-| Disk | ~11 GB |
+Graph edge policies are configured in `MTAT_graphs.py`. Training modules must
+select the corresponding cache. Some loaders fall back to an older cache name
+when the policy-specific file is absent; confirm the loaded path when comparing
+edge policies. The split is custom and song-grouped by default, which does not
+establish artist separation.
 
-Run the supervised variant **first**: the zero-shot section compares against its
-`test_metrics.json` and silently omits that line if it is absent.
-
-Expected: caption$\rightarrow$audio **R@1 0.0126, R@5 0.0766, R@10 0.1382**;
-zero-shot tagging **AUC-PR 0.0535** against supervised **0.1502**.
-
-The first Task 4 run encodes ~5,300 captions through frozen BERT and prints
-progress. It takes 1–5 minutes and is cached; **do not interrupt it**, as the
-cache is only written after the loop completes.
-
----
-
-## 5. Aggregate
+## Task 4 — MusicCaps retrieval
 
 ```bash
-python src/evaluate.py
+PYTHONPATH=src python -c "from musiccaps_features import inspect_source; inspect_source()"
+python src/audio_features.py --dataset musiccaps
 ```
 
-Walks `results/`, collects every `test_metrics.json` into
-`results/metrics.json`, and prints the comparison tables used in the report.
+The audio source is `CLAPv2/MusicCaps`; curated targets come from
+`humairaneha/MusicCaps-Curated-Tags`. The audio download is approximately 9.8 GB.
+The join supports caption matching when video IDs are unavailable. Dataset
+availability and retained clip counts can change with the source snapshot.
 
----
+The graph dispatcher targets `src/graphs.py`, which is absent from this
+checkout. The following training commands require existing MusicCaps graph
+caches under `data/processed/musiccaps/graphs/`:
 
-## What will and will not reproduce exactly
+```bash
+python src/train.py --task 4 --variant supervised
+python src/train.py --task 4
+```
 
-**Deterministic.** Splits, tag partitions, graph construction and the derived
-clip identifiers are all seeded or hash-based, so
-`data/processed/` is byte-reproducible.
+The supervised run provides an audio-only tagging reference on MusicCaps.
+It is separate from the MagnaTagATune fusion model. Contrastive outputs are
+stored under `results/task4_musiccaps/`; supervised outputs are under
+`results/musiccaps_supervised/`. Frozen BERT states are cached during the run.
 
-**Not exactly deterministic.** Training. MPS and CUDA kernels are not
-bit-reproducible across machines, and we observed a run-to-run spread of
-**±0.004 AUC-PR** on MagnaTagATune from two seeds of the same configuration.
-Differences smaller than that in the reported tables are not resolvable, which
-is why the edge-policy comparison is reported as a null result rather than a
-ranking.
+## Cache dependencies
 
-**Dataset drift.** `CLAPv2/MusicCaps` is a community mirror without a dataset
-card. It contained 5,352 of MusicCaps' 5,521 clips when we downloaded it; a
-different snapshot will change clip counts slightly, and the tag frequency floor
-is applied *after* the join precisely so the label space always matches the
-clips actually present.
+Extraction produces `segmented_audio_data.parquet`; pooling produces
+`segmented_audio_data_pooled.parquet`; splitting produces `train.parquet`,
+`val.parquet`, and `test.parquet`. Completed extraction and pooling outputs are
+reused. Removing an intermediate file requires rebuilding that stage when
+preprocessing is run again.
 
-**Two known data quirks**, both handled in code but worth knowing:
-the audio mirror has no `ytid` column, so the join falls back to caption text
-(valid, since MusicCaps captions are unique per clip); and the curated tag CSV's
-`ytid` field is partly corrupted — IDs beginning with `-` were mangled to
-`#NAME?` by a spreadsheet round-trip.
+Existing graph-based training and inference do not require the intermediate
+parquet files. Graph rebuilding and parquet-based analysis require their
+respective split files. Cache reuse does not imply that model training resumes
+from a checkpoint.
 
----
+## Aggregate results
 
-## Fastest path to a smoke test
+```bash
+python src/evaluate.py --verbose
+```
 
-To verify the pipeline end to end in under ten minutes without any large
-download, set `MAX_CLIPS = 200` in `musiccaps_features.py` and run the Task 4
-sequence. It exercises every stage — join, segmentation, feature extraction,
-pooling, stratified split, graph construction, BERT caching, contrastive
-training, retrieval and zero-shot evaluation — on a fraction of the data.
-Restore `MAX_CLIPS = None` for the reported numbers.
+This collects saved metric files into `results/metrics.json`; it does not run
+model inference. The verbose output identifies the selected metric block.
+Validation-tuned and fixed-0.5 results are stored separately in multi-label
+runs. Retain per-run source files when comparing experiments.
+
+## Demo notebook
+
+Open `notebooks/demo_context.ipynb` with the working directory set to
+`notebooks/`. It loads a cached MagnaTagATune test graph and runs the audio-only
+GNN. Its inputs include the test graph cache, label metadata, `best_gnn.pt`,
+and `thresholds.npy`. The displayed description is metadata; the notebook does
+not currently perform BERT fusion inference.
