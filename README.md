@@ -46,7 +46,8 @@ Sources: `results/task1_bert/metrics.json`,
 `results/task4_musiccaps/test_metrics.json`, and
 `results/musiccaps_supervised/mfcc_tau/test_metrics.json`.
 
-## Dataset Files
+
+## Dataset Fils
 
 Due to repository size limitations, the `data/` directory is not included in this repository. 
 The directory contains the raw data, processed features, graph representations, and train/validation/test splits required to reproduce the experiments.
@@ -71,6 +72,7 @@ gnn-bert-music-context/
 ├── results/
 ├── notebooks/
 └── report/
+```
 
 ## Layout
 
