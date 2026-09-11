@@ -139,7 +139,7 @@ python src/train.py --task 3 --variant fusion
 
 # Task 4 — MusicCaps
 python src/audio_features.py --dataset musiccaps
-# MusicCaps training requires existing graph caches; src/graphs.py is absent.
+# MusicCaps training requires existing graph caches;
 python src/train.py --task 4 --variant supervised
 python src/train.py --task 4
 
