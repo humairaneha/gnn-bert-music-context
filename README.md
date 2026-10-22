@@ -3,7 +3,6 @@
 Multi-label music context understanding by combining **graph neural networks** over audio segments with **BERT** text representations, evaluated over four tasks on MusicCaps, GTZAN and MagnaTagATune.
 
 **Authors:** Humaira Anzum Neha, Sadman Sakib (CSE715, BRAC University)
-**Report:** [report/1000060158_1000060159_Report.pdf](report/1000060158_1000060159_Report.pdf)
 
 ## Tasks
 
