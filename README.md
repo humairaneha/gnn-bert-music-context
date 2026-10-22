@@ -33,7 +33,7 @@ Centring is required: pooled MFCC/chroma vectors share a large clip-level offset
 ### 2. GraphSAGE encoder
 Each layer aggregates the mean of a node's neighbours and combines it with the node itself; a mean-pooling readout gives the track embedding $g$:
 
-$$h_i^{(l+1)} = \sigma\Big(W^{(l)} \big[\, h_i^{(l)} \,\Vert\, \operatorname{mean}_{j \in \mathcal{N}(i)} h_j^{(l)} \big]\Big), \qquad g = \frac{1}{|V|}\sum_{i \in V} h_i^{(L)}$$
+$$h_i^{(l+1)} = \sigma\Big(W^{(l)} \big[\, h_i^{(l)} \,\Vert\, \mathrm{mean}_{j \in \mathcal{N}(i)} h_j^{(l)} \big]\Big), \qquad g = \frac{1}{|V|}\sum_{i \in V} h_i^{(L)}$$
 
 Task 2 uses 3 layers with 64 hidden units on MFCC features.
 
@@ -44,7 +44,7 @@ Task 2 uses 3 layers with 64 hidden units on MFCC features.
 ### 4. Cross-attention fusion (Task 3)
 The graph embedding queries the BERT token sequence, and the attended text vector is concatenated with the graph embedding:
 
-$$Q = gW_Q,\quad K = H_{\text{text}}W_K,\quad V = H_{\text{text}}W_V,\qquad c = \operatorname{softmax}\!\Big(\frac{QK^\top}{\sqrt{d}}\Big)V,\qquad \hat{y} = \sigma\big(W_z[\,g \,\Vert\, c\,] + b_z\big)$$
+$$Q = gW_Q,\quad K = H_{\text{text}}W_K,\quad V = H_{\text{text}}W_V,\qquad c = \mathrm{softmax}\Big(\frac{QK^\top}{\sqrt{d}}\Big)V,\qquad \hat{y} = \sigma\big(W_z[\,g \,\Vert\, c\,] + b_z\big)$$
 
 ### 5. Controlled ablations (Task 3)
 Every variant shares classifier width, seed, loss, thresholding and evaluation, so only the branches and how they combine differ:
